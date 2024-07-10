@@ -1,0 +1,567 @@
+@font-face {
+  font-family: syne;
+  src: url(syne/TTF/Syne-Bold.ttf);
+}
+
+.fullbody {
+  background-color: black;
+}
+#footer {
+  background: #444444;
+  height: 20px;
+  font-family: "Open Sans", sans-serif;
+  color: #ffffff;
+  padding: 0px;
+}
+html {
+  scroll-behavior: smooth; /* Smooth scroll for the entire page */
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 45px;
+}
+
+.menu {
+  display: flex;
+  gap: 25px;
+  font-family: "syne";
+  font-size: 12px;
+  color: #ffffff;
+}
+
+.menu a {
+  color: #ffffff; /* Make the text white */
+  text-decoration: none; /* Remove underline from links */
+}
+
+.menu a:hover {
+  text-decoration: underline; /* Optional: Add underline on hover for better UX */
+}
+
+@media(max-width:461px){
+  .menu{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    text-align: center;
+  }
+}
+.logo {
+  font-family: "syne";
+  font-weight: bold;
+  font-size: 12px;
+  color: #ffffff;
+}
+
+@media (max-width: 555px) {
+  .logo {
+    display: none;
+  }
+}
+.icon {
+  display: flex;
+  gap: 15px;
+  font-size: 22px;
+  height: 10px;
+  color: #ffffff;
+}
+
+@media (max-width: 463px) {
+  .icon {
+    display: none;
+  }
+}
+
+.flex-container {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.heading {
+  text-align: center;
+  color: #ffffff;
+  font-family: "Syne";
+  font-size: 200px;
+  font-weight: 800;
+  line-height: 82.88px;
+  margin-top: 20px;
+  margin-bottom: 10px; /* Set the bottom margin to 10px to space from the image */
+}
+
+.homeimage {
+  text-align: center;
+  padding-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.homeimage img {
+  width: 1000px; /* Set the image width to 200px */
+  height: auto; /* Maintain the aspect ratio */
+}
+
+.about1 {
+  position: relative;
+  color: #ffffff;
+  font-family: "Syne";
+  margin-left: 600px;
+  margin-top: 60px;
+  line-height: 2; /* Adjust as necessary */
+}
+@media (max-width: 768px) {
+  .about1 {
+    margin-left: 400px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 505px) {
+  .about1 {
+    margin-left: 50px;
+    font-size: 7px;
+  }
+}
+
+.about2 {
+  position: relative;
+  color: #ffffff;
+  font-family: "Syne";
+  margin-left: 200px;
+  margin-top: 60px;
+  font-size: 70px; /* Adjust to ensure no overlap */
+}
+
+@media (max-width: 1193px) {
+  .about2 {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 764px) {
+  .about2 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 611px) {
+  .about2 {
+    font-size: 15px;
+  }
+}
+
+/*done*/
+.workbox {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.work {
+  margin: 10px;
+}
+
+.left {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+.workbox {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.work {
+  margin: 10px;
+}
+
+.left {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.large {
+  width: 100px;
+  height: auto;
+}
+
+.small {
+  width: 50px;
+  height: auto;
+}
+
+.work img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.about3 {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+.aboutimg {
+  width: 30%;
+  margin-right: 20px;
+}
+
+.aboutimg img {
+  width: 100%;
+  height: auto;
+}
+
+.about3 p {
+  width: 70%;
+  font-family: "syne";
+  color: #ffffff;
+}
+
+body,
+html {
+  height: 100%;
+  margin: 0;
+  font-family: "syne";
+  color: #ffffff;
+}
+.full-height-section {
+  font-size: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20%;
+  text-align: center;
+  padding: 150px;
+  box-sizing: border-box;
+  margin-top: 80px;
+  margin-bottom: 100px;
+  padding-top: 200px;
+}
+
+@media (max-width: 1522px) {
+  .full-height-section {
+    font-size: 60px;
+  }
+}
+
+@media (max-width: 1234px) {
+  .full-height-section {
+    font-size: 50px;
+  }
+}
+
+@media (max-width: 924px) {
+  .full-height-section {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 707px) {
+  .full-height-section {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 518px) {
+  .full-height-section {
+    font-size: 21px;
+  }
+}
+
+@media (max-width: 423px) {
+  .full-height-section {
+    font-size: 15px;
+  }
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.image-gallery {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px;
+  margin-top: 60px;
+}
+
+@media (max-width: 425px) {
+  .image-gallery {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.image-container {
+  position: relative;
+  overflow: hidden; /* Hide overflow to clip the image */
+  width: 60%; /* Adjust based on how many images and desired size */
+  margin: 10px;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease; /* Smooth transition */
+}
+
+.image-container .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  transition: background 0.3s ease;
+  pointer-events: none;
+}
+
+.image-container:hover img {
+  transform: scale(1.1);
+}
+
+.image-container:hover .overlay {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.footer {
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.headingend {
+  text-align: center;
+  color: #ffffff;
+  font-family: "Syne";
+  font-size: 150px;
+  font-weight: 800;
+  line-height: 82.88px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 1122px) {
+  .headingend {
+    font-size: 100px;
+  }
+}
+
+@media (max-width: 887px) {
+  .headingend {
+    font-size: 80px;
+  }
+}
+
+@media (max-width: 622px) {
+  .headingend {
+    font-size: 60px;
+  }
+}
+
+@media (max-width: 558px) {
+  .headingend {
+    font-size: 40px;
+  }
+}
+@media (max-width: 396px) {
+  .headingend {
+    font-size: 25px;
+  }
+}
+
+.endmenu {
+  display: flex;
+  gap: 25px;
+  font-family: "syne";
+  font-size: 12px;
+  color: #ffffff;
+}
+
+.endicon {
+  display: flex;
+  gap: 15px;
+  font-size: 22px;
+  height: 10px;
+  color: #ffffff;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+.mainabout {
+  text-align: center;
+  padding: 70px;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.text {
+  padding-right: 20px;
+  text-align: left;
+  line-height: 2;
+  font-family: "syne";
+}
+@media (max-width: 1063px) {
+  .text {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 771px) {
+  .text {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 561px) {
+  .text {
+    font-size: 10px;
+  }
+}
+
+.image {
+  flex: 1;
+  padding-left: 20px;
+  text-align: right;
+}
+
+.image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.abouth1 {
+  font-size: 60px;
+  color: #ffffff;
+  font-family: "syne";
+  font-weight: 200;
+}
+@media (max-width: 556px) {
+  .abouth1 {
+    font-size: 50px;
+  }
+}
+@media (max-width: 481px) {
+  .abouth1 {
+    font-size: 40px;
+  }
+}
+@media (max-width: 438px) {
+  .abouth1 {
+    font-size: 30px;
+  }
+}
+@media (max-width: 362px) {
+  .abouth1 {
+    font-size: 20px;
+  }
+}
+
+.pbutton {
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  display: flex;
+  text-decoration: none; /* Added to remove the underline */
+  
+}
+
+.pbutton:hover {
+  background-color: white;
+  color: black;
+}
+.pcontainer {
+  display: flex;
+  justify-content: center;
+}
+
+.contactbutton {
+  padding-bottom: 50px;
+}
+.pcontainer a {
+  text-decoration: none; /* Ensures link text has no underline */
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+#canvas {
+  position: fixed; /* Fixed position to stay in the background */
+  top: 0;
+  left: 0;
+  z-index: -1; /* Ensure canvas is behind other content */
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1077px) {
+  .heading {
+    font-size: 150px;
+  }
+}
+
+@media (max-width: 814px) {
+  .heading {
+    font-size: 100px;
+  }
+}
+@media (max-width: 546px) {
+  .heading {
+    font-size: 60px;
+  }
+}

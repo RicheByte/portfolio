@@ -1,0 +1,12 @@
+@media only screen and (max-width: 1088px){
+    .heading {
+        text-align: center;
+        color: #cf5050;
+        font-family: "Syne";
+        font-size: 200px;
+        font-weight: 800;
+        line-height: 82.88px;
+        margin-top: 20px;
+        margin-bottom: 10px; /* Set the bottom margin to 10px to space from the image */
+      }
+}
