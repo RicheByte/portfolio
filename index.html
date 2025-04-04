@@ -1,164 +1,593 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="mediaQueries" href="media.css" />
-</head>
-
-<body class="fullbody">
-  <canvas id="canvas"></canvas>
-  <script src="script.js"></script>
-
-  <div class="header" id="home">
-    <div class="menu">
-      <a href="#home">
-        <div>HOME</div>
-      </a>
-      <a href="#about">
-        <div>ABOUT</div>
-      </a>
-      <a href="#work">
-        <div>WORK</div>
-      </a>
-    </div>
-    <div class="flex-container">
-      <div class="logo">RICH <br />ARD</div>
-    </div>
-    <div class="icon">
-      <div>
-        <a href="https://www.instagram.com/nightfallrichard"><img src="🦆 icon _instagram_.png" alt=""
-            style="height: 17px" /></a>
-      </div>
-      <div>
-        <a href="mailto:richardgrayson2161@gmail.com">
-          <img src="🦆 icon _envelope closed_.png" alt="" style="height: 17px" /></a>
-      </div>
-    </div>
-  </div>
-
-  <section>
-    <div class="gap">
-      <div class="container">
-        <h1 align="center" class="heading"><b>RICHARD</b></h1>
-      </div>
-      <div class="homeimage" align="center">
-        <img src="1.jpg" />
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2 class="about2">I'M NOT A REGULAR DEVELOPER,</h2>
-    <hr />
-    <h2 class="about2">I'M A COOL DEVELOPER.</h2>
-    <hr />
-  </section>
-
-  <section class="about1">
-    <p>About me</p>
-
-    <p>Software engineer</p>
-
-    <p>Content creator</p>
-
-    <p>Artist</p>
-  </section>
-
-  <section class="image-gallery" id="work">
-    <div class="image-container">
-      <img src="img1.jpg" alt="Work 1" />
-      <div class="overlay"></div>
-    </div>
-    <div class="image-container">
-      <img src="img2.jpg" alt="Work 2" />
-      <div class="overlay"></div>
-    </div>
-    <div class="image-container">
-      <img src="img3.jpg" alt="Work 3" />
-      <div class="overlay"></div>
-    </div>
-  </section>
-  <div class="pcontainer">
-    <button class="pbutton"
-      onclick="window.location.href='https://bigcreator.notion.site/Portfolio-e2838704d634457db0e765f995396b4e?pvs=4'">
-      SEE MORE
-    </button>
-  </div>
-  <section class="full-height-section">
-    <div>
-      <p>
-        I am partner with visionary founders and teams to build game-changing
-        brands, <br />
-        Hand working on a logo drawing circles <br />
-        products, and websites for the new ideas that will reshape the world.
-      </p>
-    </div>
-  </section>
-  <hr />
-  <section class="background-section">
-    <style>
-      section.background-section {
-        background-image: url("img4.png");
-        height: 200px;
-        background-size: cover;
-        background-position: center;
+  <title>RicheByte - Cyber Portfolio</title>
+  <style>
+    :root {
+      --terminal-green: #00ff00;
+      --matrix-green: #20c20e;
+      --background: #000;
+      --nav-height: 70px;
+      --neon-blue: #00d4ff;
+      --neon-purple: #ff00ff;
+      --accent: #ff007f;
+    }
+    /* Reset & Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      /* For a modern look you can swap Courier New with a sans-serif if desired */
+      font-family: "Courier New", monospace;
+    }
+    body {
+      background: var(--background);
+      color: var(--matrix-green);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+    
+    /* Matrix Background with Subtle Animation */
+    .matrix-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      z-index: -1;
+      animation: matrixRain 15s linear infinite;
+    }
+    @keyframes matrixRain {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100%; }
+    }
+    
+    /* Navigation Bar */
+    .nav-bar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: var(--nav-height);
+      background: rgba(0, 0, 0, 0.9);
+      border-bottom: 2px solid var(--matrix-green);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 20px var(--matrix-green);
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-link {
+      color: var(--matrix-green);
+      text-decoration: none;
+      text-transform: uppercase;
+      font-weight: bold;
+      position: relative;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s ease;
+    }
+    .nav-link:hover {
+      color: var(--neon-blue);
+      text-shadow: 0 0 15px var(--neon-blue);
+      transform: translateY(-3px);
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background: var(--neon-blue);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    /* Responsive nav for mobile */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: var(--nav-height);
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.95);
       }
-    </style>
-  </section>
-  <hr />
-  <section>
-    <div class="mainabout" id="about">
-      <p class="abouth1">DON'T BE SHY TO MESSAGE ME</p>
-      <div class="content">
-        <div class="text">
-          <p>
-            I'm a passionate software engineer with a strong background in web
-            development, machine learning, app development. I have 2 years of experience in the industry
-            My educational journey began with a Bsc (honurs) Software engineering in from Saegis campus. Throughout my
-            studies, I developed strong skills in problem-solving, critical thinking, data structures, algorithms.
-            Outside of coding, I'm interested in coding in free time. These activities help me
-            stay creative, learn new things,
-            improve problem-solving skills.
-  </section>
-  </p>
-  </div>
-  <div class="image">
+      .nav-links.active {
+        display: flex;
+      }
+    }
+    
+    /* Hero Section */
+    .hero-banner {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle, rgba(32, 194, 14, 0.1) 0%, var(--background) 70%);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 0 1rem;
+    }
+    .hero-banner h1 {
+      font-size: 4.5rem;
+      text-shadow: 0 0 20px var(--matrix-green), 0 0 40px var(--neon-blue);
+      animation: glitch 2s infinite;
+    }
+    .hero-banner p {
+      font-size: 1.8rem;
+      margin: 1rem 0;
+      color: var(--neon-purple);
+    }
+    .hero-cta {
+      margin-top: 2rem;
+      padding: 1rem 3rem;
+      background: transparent;
+      border: 2px solid var(--matrix-green);
+      color: var(--matrix-green);
+      text-transform: uppercase;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+    .hero-cta:hover {
+      background: var(--matrix-green);
+      color: #000;
+      box-shadow: 0 0 30px var(--matrix-green);
+      transform: scale(1.1);
+    }
+    @keyframes glitch {
+      0% { text-shadow: 0 0 20px var(--matrix-green); }
+      95% { text-shadow: 0 0 20px var(--matrix-green); }
+      96% { text-shadow: -2px 0 var(--accent), 2px 0 var(--neon-blue); }
+      100% { text-shadow: 0 0 20px var(--matrix-green); }
+    }
+    
+    /* Section Common Styles */
+    section {
+      padding: 5rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-title {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      background: linear-gradient(45deg, var(--matrix-green), var(--neon-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+    }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      width: 100px;
+      height: 3px;
+      background: var(--matrix-green);
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    /* About Me Section */
+    .about-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: center;
+      justify-content: center;
+    }
+    .about-image {
+      flex: 1 1 300px;
+      max-width: 300px;
+    }
+    .about-image img {
+      width: 100%;
+      border-radius: 50%;
+      border: 3px solid var(--matrix-green);
+      box-shadow: 0 0 20px var(--matrix-green);
+    }
+    .about-text {
+      flex: 2 1 500px;
+      font-size: 1.1rem;
+      color: rgba(32, 194, 14, 0.8);
+    }
+    
+    /* Skills Section */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+    .skill-card {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 2rem;
+      border: 1px solid var(--matrix-green);
+      border-radius: 8px;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .skill-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 30px var(--matrix-green);
+    }
+    .skill-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 10px var(--matrix-green));
+    }
+    .skill-name {
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .skill-level {
+      margin-top: 1rem;
+      height: 5px;
+      background: rgba(32, 194, 14, 0.2);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .skill-level-bar {
+      height: 100%;
+      background: var(--matrix-green);
+      animation: skillFill 2s ease forwards;
+    }
+    @keyframes skillFill {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    
+    /* Projects Section */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .project-card {
+      background: rgba(0, 0, 0, 0.9);
+      padding: 1.5rem;
+      border: 1px solid var(--matrix-green);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .project-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 40px var(--neon-blue);
+    }
+    .project-title {
+      font-size: 1.5rem;
+      color: var(--neon-blue);
+      margin-bottom: 1rem;
+    }
+    .project-desc {
+      font-size: 1rem;
+      color: rgba(32, 194, 14, 0.8);
+    }
+    .project-tech {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--neon-purple);
+    }
+    
+    /* Services Section */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .service-card {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 2rem;
+      border: 1px solid var(--matrix-green);
+      border-radius: 8px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 25px var(--neon-blue);
+    }
+    .service-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--neon-blue);
+    }
+    .service-title {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+    .service-desc {
+      font-size: 0.95rem;
+      color: rgba(32, 194, 14, 0.8);
+    }
+    
+    /* Testimonials Section */
+    .testimonials {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      align-items: center;
+    }
+    .testimonial {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 2rem;
+      border: 1px solid var(--matrix-green);
+      border-radius: 8px;
+      max-width: 800px;
+      font-style: italic;
+      color: rgba(32, 194, 14, 0.8);
+      position: relative;
+    }
+    .testimonial::before {
+      content: "“";
+      font-size: 3rem;
+      position: absolute;
+      top: -20px;
+      left: 10px;
+      color: var(--neon-purple);
+    }
+    
+    /* Contact Section */
+    .contact-form {
+      max-width: 600px;
+      margin: 0 auto;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 2rem;
+      border: 1px solid var(--matrix-green);
+      border-radius: 8px;
+      box-shadow: 0 0 20px var(--matrix-green);
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--neon-blue);
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.8rem;
+      background: rgba(32, 194, 14, 0.1);
+      border: 1px solid var(--matrix-green);
+      color: var(--matrix-green);
+      font-family: "Courier New", monospace;
+      border-radius: 4px;
+    }
+    .form-group textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      background: var(--matrix-green);
+      border: none;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .submit-btn:hover {
+      background: var(--neon-blue);
+      box-shadow: 0 0 20px var(--neon-blue);
+    }
+    
+    /* Footer */
+    .site-footer {
+      background: rgba(0, 0, 0, 0.9);
+      padding: 2rem;
+      text-align: center;
+      border-top: 1px solid var(--matrix-green);
+    }
+    .footer-links a {
+      color: var(--matrix-green);
+      margin: 0 1rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: var(--neon-blue);
+      text-shadow: 0 0 10px var(--neon-blue);
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .hero-banner h1 { font-size: 3rem; }
+      .hero-banner p { font-size: 1.2rem; }
+      .about-container { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="matrix-grid"></div>
 
-  </div>
-  </div>
-  </div>
+  <!-- Navigation -->
+  <nav class="nav-bar">
+    <ul class="nav-links">
+      <li><a href="#home" class="nav-link">Home</a></li>
+      <li><a href="#about" class="nav-link">About</a></li>
+      <li><a href="#skills" class="nav-link">Skills</a></li>
+      <li><a href="#projects" class="nav-link">Projects</a></li>
+      <li><a href="#services" class="nav-link">Services</a></li>
+      <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
+      <li><a href="#contact" class="nav-link">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero-banner">
+    <h1>[RICHEBYTE]</h1>
+    <p>Cybersecurity Enthusiast | Developer | Innovator</p>
+    <button class="hero-cta" onclick="document.querySelector('#projects').scrollIntoView({ behavior: 'smooth' })">
+      Explore My Work
+    </button>
   </section>
-  <div class="contactbutton">
-    <div class="pcontainer">
-      <a href="mailto:richradgrayson2161@gmail.com"><button class="pbutton">CONTACT ME</button></a>
+
+  <!-- About Me Section -->
+  <section id="about">
+    <h2 class="section-title">> About Me</h2>
+    <div class="about-container">
+      <div class="about-image">
+        <!-- Replace the src with your headshot image -->
+        <img src="me.png" alt="Your Headshot" />
+      </div>
+      <div class="about-text">
+        <p>Hello! I’m Kanchuka, a passionate cybersecurity expert and creative developer who loves merging technology with art. I craft digital experiences that are both secure and visually striking.</p>
+        <p>My work is built on a foundation of innovation, integrity, and relentless learning.</p>
+      </div>
     </div>
-  </div>
-  <footer>
-    <hr />
-    <div class="footer">
-      <div class="menuend">
-        <div>HOME</div>
-        <div>ABOUT</div>
-        <div>WORK</div>
-      </div>
-      <div class="container">
-        <h1 align="center" class="headingend"><b>RICHARD</b></h1>
-      </div>
+  </section>
 
-      <div class="iconend" align="right">
-        <div>
-          <img src="🦆 icon _instagram_.png" alt="" style="height: 17px" />
-        </div>
-        <div>
-          <img src="🦆 icon _envelope closed_.png" alt="" style="height: 17px" />
+  <!-- Skills Section -->
+  <section id="skills">
+    <h2 class="section-title">> Skills</h2>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <span class="skill-icon">💻</span>
+        <h3 class="skill-name">Programming</h3>
+        <div class="skill-level">
+          <div class="skill-level-bar" style="width: 90%;"></div>
         </div>
       </div>
+      <div class="skill-card">
+        <span class="skill-icon">🔒</span>
+        <h3 class="skill-name">Cybersecurity</h3>
+        <div class="skill-level">
+          <div class="skill-level-bar" style="width: 85%;"></div>
+        </div>
+      </div>
+      <div class="skill-card">
+        <span class="skill-icon">🌐</span>
+        <h3 class="skill-name">Networking</h3>
+        <div class="skill-level">
+          <div class="skill-level-bar" style="width: 80%;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects">
+    <h2 class="section-title">> Projects</h2>
+    <div class="projects-grid">
+      <div class="project-card">
+        <h3 class="project-title">Network Scanner</h3>
+        <p class="project-desc">A Python-based tool for scanning and analyzing network vulnerabilities in real time.</p>
+        <p class="project-tech">Tech: Python, Scapy</p>
+      </div>
+      <div class="project-card">
+        <h3 class="project-title">Encryption Suite</h3>
+        <p class="project-desc">A custom encryption tool supporting AES and RSA algorithms with secure key management.</p>
+        <p class="project-tech">Tech: JavaScript, CryptoJS</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services">
+    <h2 class="section-title">> Services</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🛡️</div>
+        <h3 class="service-title">Security Audits</h3>
+        <p class="service-desc">Comprehensive security reviews and vulnerability assessments to protect your digital assets.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💡</div>
+        <h3 class="service-title">Consulting</h3>
+        <p class="service-desc">Strategic advice on cybersecurity best practices and digital innovation.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">⚙️</div>
+        <h3 class="service-title">Development</h3>
+        <p class="service-desc">Custom software solutions that combine secure coding with creative design.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials">
+    <h2 class="section-title">> Testimonials</h2>
+    <div class="testimonials">
+      <div class="testimonial">
+        <p>"Kanchuka delivered beyond our expectations. Their unique approach to cybersecurity and design truly sets them apart."</p>
+        <p>- Industry Expert</p>
+      </div>
+      <div class="testimonial">
+        <p>"Working with Kanchuka was a game changer. Their innovative solutions and deep technical knowledge are unmatched."</p>
+        <p>- Satisfied Client</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <h2 class="section-title">> Contact Me</h2>
+    <div class="contact-form">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Enter your name" />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Enter your email" />
+      </div>
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" placeholder="Your message here..."></textarea>
+      </div>
+      <button class="submit-btn">Send Transmission</button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>© 2025 RicheByte. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="#" target="_blank">GitHub</a>
+      <a href="#" target="_blank">LinkedIn</a>
+      <a href="#" target="_blank">Twitter</a>
     </div>
   </footer>
-</body>
 
+  <!-- JavaScript -->
+  <script>
+    // Smooth scrolling for nav links
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
 </html>
+
