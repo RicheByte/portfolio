@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -316,7 +317,7 @@
             box-shadow: 0 0 25px rgba(0, 255, 0, 0.4);
             transition: transform 0.4s ease, box-shadow 0.4s ease;
             /* Add loading lazy for performance */
-            loading="lazy"
+            /* loading="lazy" attribute belongs on the HTML img tag, not in CSS */
         }
         .about-image img:hover {
             transform: scale(1.05);
@@ -655,6 +656,9 @@
             <li><a href="#services" class="nav-link">Services</a></li>
             <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
             <li><a href="#contact" class="nav-link">Contact</a></li>
+            <li><a href="graphic.html" class="nav-link">Design</a></li>
+            <!-- Add link to the new tools page -->
+            <li><a href="software.html" class="nav-link">Tools</a></li>
         </ul>
         <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
             <span></span>
