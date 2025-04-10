@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RicheByte - Graphic Design Showcase">
+  <title>RicheByte - Graphic Design</title>
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    :root {
+      --terminal-green: #00ff00;
+      --matrix-green: #20c20e;
+      --background: #000;
+      --nav-height: 70px;
+      --neon-blue: #00d4ff;
+      --neon-purple: #ff00ff;
+      --accent: #ff007f;
+      --text-color: rgba(32, 194, 14, 0.85);
+      --card-bg: rgba(0, 0, 0, 0.85);
+      --border-color: rgba(0, 255, 0, 0.5);
+      --glow-shadow: 0 0 10px rgba(0, 212, 255, 0.3); /* subtle glow effect */
+    }
+
+    /* Reset & Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Courier New", monospace;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      background: var(--background);
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+      font-size: 16px;
+    }
+    
+    /* Matrix Background (Subtle) */
+    .matrix-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
+      background-size: 25px 25px;
+      pointer-events: none;
+      z-index: -1;
+      animation: matrixRain 25s linear infinite;
+    }
+    @keyframes matrixRain {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100vh; }
+    }
+    
+    /* Navigation Bar */
+    .nav-bar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: var(--nav-height);
+      background: rgba(0, 0, 0, 0.95);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2rem;
+      box-shadow: 0 2px 15px rgba(0, 255, 0, 0.2);
+    }
+    .nav-logo a {
+      color: var(--matrix-green);
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      text-shadow: 0 0 5px var(--matrix-green);
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-link {
+      color: var(--matrix-green);
+      text-decoration: none;
+      text-transform: uppercase;
+      font-weight: bold;
+      position: relative;
+      padding: 0.5rem 0;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+    .nav-link:hover {
+      color: var(--neon-blue);
+      text-shadow: 0 0 10px var(--neon-blue);
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background: var(--neon-blue);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    /* Mobile Nav Toggle */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background-color: var(--matrix-green);
+      margin: 5px 0;
+      transition: all 0.3s ease-in-out;
+    }
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: var(--nav-height);
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.98);
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem 0;
+        border-top: 1px solid var(--border-color);
+      }
+      .nav-links.active {
+        display: flex;
+      }
+      .nav-link {
+        padding: 1rem 0;
+        font-size: 1rem;
+      }
+      .nav-toggle {
+        display: block;
+      }
+      .nav-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+      }
+      .nav-toggle.active span:nth-child(2) {
+        opacity: 0;
+      }
+      .nav-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px);
+      }
+    }
+    
+    /* Section Common Styles */
+    section {
+      padding: calc(var(--nav-height) + 4rem) 2rem 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .section-title {
+      font-size: clamp(2rem, 6vw, 2.5rem);
+      text-align: center;
+      margin-bottom: 3.5rem;
+      color: var(--matrix-green);
+      text-shadow: 0 0 8px var(--neon-blue);
+      position: relative;
+    }
+    .section-title::before {
+      content: '_';
+      display: inline-block;
+      margin-left: 5px;
+      animation: blink 1s infinite;
+      color: var(--neon-blue);
+    }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      width: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--matrix-green), transparent);
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    
+    /* Footer */
+    .site-footer {
+      background: rgba(0, 0, 0, 0.95);
+      padding: 2.5rem 1rem;
+      text-align: center;
+      border-top: 1px solid var(--border-color);
+      margin-top: 4rem;
+    }
+    .footer-text {
+      color: var(--text-color);
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+    .footer-links a {
+      color: var(--matrix-green);
+      margin: 0 1rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 1.5rem;
+    }
+    .footer-links a:hover {
+      color: var(--neon-blue);
+      transform: scale(1.1);
+      text-shadow: 0 0 10px var(--neon-blue);
+    }
+    
+    /* Gallery Styles with Hover Glow and Overlay */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border: 2px solid var(--border-color);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: block;
+    }
+    .gallery-item:hover img {
+      transform: scale(1.03);
+      box-shadow: var(--glow-shadow);
+    }
+    /* Overlay for additional information */
+    .gallery-item-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1rem;
+      transition: opacity 0.3s ease;
+      font-size: 0.9rem;
+    }
+    .gallery-item:hover .gallery-item-overlay {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="matrix-grid"></div>
+
+  <!-- Navigation -->
+  <nav class="nav-bar">
+    <div class="nav-logo">
+      <a href="index.html">RicheByte</a>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#home" class="nav-link">Home</a></li>
+      <li><a href="index.html#about" class="nav-link">About</a></li>
+      <li><a href="index.html#skills" class="nav-link">Skills</a></li>
+      <li><a href="index.html#projects" class="nav-link">Projects</a></li>
+      <li><a href="index.html#services" class="nav-link">Services</a></li>
+      <li><a href="index.html#testimonials" class="nav-link">Testimonials</a></li>
+      <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+      <li><a href="graphic.html" class="nav-link">Design</a></li>
+      <li><a href="software.html" class="nav-link">Tools</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Graphic Design Content Section -->
+  <section id="graphic-design">
+    <h2 class="section-title">> Graphic_Creations // Visuals</h2>
+    <p style="text-align: center; margin-bottom: 2rem;">
+      Showcasing the creative side - explorations in digital art and design.
+    </p>
+
+    <!-- Gallery Grid -->
+    <div class="gallery-grid">
+      <!-- Gallery Item 1 -->
+      <div class="gallery-item">
+        <img src="new.png" alt="Design Example 1" loading="lazy"/>
+        <div class="gallery-item-overlay">
+          <p>Design Example 1: Description or details go here.</p>
+        </div>
+      </div>
+      <!-- Gallery Item 2 -->
+      <div class="gallery-item">
+        <img src="path/to/your/design2.jpg" alt="Design Example 2" loading="lazy"/>
+        <div class="gallery-item-overlay">
+          <p>Design Example 2: More information about this creative work.</p>
+        </div>
+      </div>
+      <!-- Placeholder Message when no images available -->
+      <p style="grid-column: 1 / -1; text-align: center;">(WIll BE UPDATED SOON)</p>
+    </div>
+
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p class="footer-text">© <span id="currentYear"></span> RicheByte // Kanchuka. System Integrity Maintained.</p>
+    <div class="footer-links">
+      <a href="https://github.com/RicheByte" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile"><i class="fab fa-github"></i></a>
+      <a href="#" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile"><i class="fab fa-linkedin"></i></a>
+      <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Twitter Profile"><i class="fab fa-twitter"></i></a>
+      <a href="#" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe Profile"><i class="fas fa-terminal"></i></a>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // Mobile Navigation Toggle
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    if (navToggle && navLinks) {
+      navToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        navToggle.classList.toggle('active');
+      });
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          if (navLinks.classList.contains('active')) {
+            navLinks.classList.remove('active');
+            navToggle.classList.remove('active');
+          }
+        });
+      });
+    } else {
+      console.error("Nav toggle or nav links element not found.");
+    }
+
+    // Update Footer Year
+    const currentYearElement = document.getElementById('currentYear');
+    if (currentYearElement) {
+      currentYearElement.textContent = new Date().getFullYear();
+    } else {
+      console.error("Current year element not found.");
+    }
+  </script>
+</body>
+</html>
