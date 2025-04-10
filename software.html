@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RicheByte - Software Tools Proficiency">
+  <title>RicheByte - Software Tools</title>
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    :root {
+      --terminal-green: #00ff00;
+      --matrix-green: #20c20e;
+      --background: #000;
+      --nav-height: 70px;
+      --neon-blue: #00d4ff;
+      --neon-purple: #ff00ff;
+      --accent: #ff007f;
+      --text-color: rgba(32, 194, 14, 0.85);
+      --card-bg: rgba(0, 0, 0, 0.85);
+      --border-color: rgba(0, 255, 0, 0.5);
+    }
+
+    /* Reset & Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Courier New", monospace;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--background);
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+      font-size: 16px;
+      /* Center content horizontally */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Matrix Background */
+    .matrix-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
+      background-size: 25px 25px;
+      pointer-events: none;
+      z-index: -1;
+      animation: matrixRain 25s linear infinite;
+    }
+
+    @keyframes matrixRain {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100vh; }
+    }
+
+    /* Navigation Bar */
+    .nav-bar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: var(--nav-height);
+      background: rgba(0, 0, 0, 0.95);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2rem;
+      box-shadow: 0 2px 15px rgba(0, 255, 0, 0.2);
+    }
+
+    .nav-logo a {
+      color: var(--matrix-green);
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      text-shadow: 0 0 5px var(--matrix-green);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-link {
+      color: var(--matrix-green);
+      text-decoration: none;
+      text-transform: uppercase;
+      font-weight: bold;
+      padding: 0.5rem 0;
+      transition: color 0.3s ease;
+      font-size: 0.85rem;
+    }
+
+    .nav-link:hover {
+      color: var(--neon-blue);
+      text-shadow: 0 0 10px var(--neon-blue);
+    }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background-color: var(--matrix-green);
+      margin: 5px 0;
+      transition: all 0.3s ease-in-out;
+    }
+
+    /* Mobile Navigation Styles */
+    @media (max-width: 992px) {
+      .nav-links {
+        gap: 1rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: var(--nav-height);
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.98);
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem 0;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .nav-link {
+        padding: 1rem 0;
+        font-size: 1rem;
+      }
+
+      .nav-toggle {
+        display: block;
+      }
+
+      .nav-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+      }
+      .nav-toggle.active span:nth-child(2) {
+        opacity: 0;
+      }
+      .nav-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px);
+      }
+    }
+
+    /* Section Common Styles */
+    section {
+      padding: calc(var(--nav-height) + 4rem) 2rem 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 6vw, 2.5rem);
+      margin-bottom: 3.5rem;
+      color: var(--matrix-green);
+      text-shadow: 0 0 8px var(--neon-blue);
+      position: relative;
+    }
+
+    .section-title::before {
+      content: '_';
+      display: inline-block;
+      margin-left: 5px;
+      animation: blink 1s infinite;
+      color: var(--neon-blue);
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      width: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--matrix-green), transparent);
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Footer */
+    .site-footer {
+      background: rgba(0, 0, 0, 0.95);
+      padding: 2.5rem 1rem;
+      text-align: center;
+      border-top: 1px solid var(--border-color);
+      margin-top: 4rem;
+      width: 100%;
+    }
+    .footer-text {
+      color: var(--text-color);
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+    .footer-links a {
+      color: var(--matrix-green);
+      margin: 0 1rem;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: var(--neon-blue);
+      transform: scale(1.1);
+      text-shadow: 0 0 10px var(--neon-blue);
+    }
+
+    /* Tools Grid Styles */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+      /* Center grid items */
+      justify-items: center;
+      width: 100%;
+    }
+
+    .tool-card {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      text-align: center;
+      transition: box-shadow 0.3s ease;
+      width: 100%;
+      max-width: 250px;
+    }
+
+    .tool-card:hover {
+      box-shadow: 0 0 15px var(--neon-purple);
+      border-color: var(--neon-purple);
+    }
+
+    .tool-icon {
+      margin-bottom: 1rem;
+    }
+
+    .tool-icon img {
+      max-width: 60px;
+      height: auto;
+      filter: drop-shadow(0 0 5px var(--matrix-green));
+    }
+    .tool-icon i {
+      font-size: 3rem;
+      color: var(--matrix-green);
+      filter: drop-shadow(0 0 5px var(--matrix-green));
+    }
+
+    .tool-name {
+      font-size: 1.2rem;
+      color: #eee;
+      margin-bottom: 0.5rem;
+    }
+
+    .tool-desc {
+      font-size: 0.9rem;
+      color: var(--text-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="matrix-grid"></div>
+
+  <!-- Navigation -->
+  <nav class="nav-bar">
+    <div class="nav-logo">
+      <a href="index.html">RicheByte</a>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#home" class="nav-link">Home</a></li>
+      <li><a href="index.html#about" class="nav-link">About</a></li>
+      <li><a href="index.html#skills" class="nav-link">Skills</a></li>
+      <li><a href="index.html#projects" class="nav-link">Projects</a></li>
+      <li><a href="index.html#services" class="nav-link">Services</a></li>
+      <li><a href="index.html#testimonials" class="nav-link">Testimonials</a></li>
+      <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+      <li><a href="graphic.html" class="nav-link">Design</a></li>
+      <li><a href="software.html" class="nav-link">Tools</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Software Tools Content Section -->
+  <section id="software-tools">
+    <h2 class="section-title">> Software_Arsenal // Toolkit</h2>
+    <p style="margin-bottom: 2rem;">
+      A selection of software and tools I frequently use and am proficient with.
+    </p>
+
+    <!-- Tools Grid -->
+    <div class="tools-grid">
+      <!-- IT Tools -->
+      <h2 style="grid-column: 1/-1; color: var(--matrix-green); margin-bottom: 1rem;">IT Tools</h2>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fas fa-desktop"></i>
+        </div>
+        <h3 class="tool-name">Remote Desktop</h3>
+        <p class="tool-desc">Remote access and control.</p>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fas fa-database"></i>
+        </div>
+        <h3 class="tool-name">SQL Database</h3>
+        <p class="tool-desc">Data management and querying.</p>
+      </div>
+
+      <!-- Design Tools -->
+      <h2 style="grid-column: 1/-1; color: var(--matrix-green); margin-bottom: 1rem;">Design Tools</h2>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fas fa-palette"></i>
+        </div>
+        <h3 class="tool-name">Adobe Photoshop</h3>
+        <p class="tool-desc">Image editing and manipulation.</p>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fas fa-vector-square"></i>
+        </div>
+        <h3 class="tool-name">Adobe Illustrator</h3>
+        <p class="tool-desc">Vector graphics editor.</p>
+      </div>
+
+      <!-- Hacking Tools -->
+      <h2 style="grid-column: 1/-1; color: var(--matrix-green); margin-bottom: 1rem;">Hacking Tools</h2>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fas fa-terminal"></i>
+        </div>
+        <h3 class="tool-name">Nmap</h3>
+        <p class="tool-desc">Network scanner.</p>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fas fa-key"></i>
+        </div>
+        <h3 class="tool-name">Metasploit</h3>
+        <p class="tool-desc">Penetration testing framework.</p>
+      </div>
+
+      <!-- Operating Systems -->
+      <h2 style="grid-column: 1/-1; color: var(--matrix-green); margin-bottom: 1rem;">Operating Systems</h2>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fab fa-linux"></i>
+        </div>
+        <h3 class="tool-name">Linux</h3>
+        <p class="tool-desc">Open-source operating system.</p>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fab fa-windows"></i>
+        </div>
+        <h3 class="tool-name">Windows</h3>
+        <p class="tool-desc">Microsoft's operating system.</p>
+      </div>
+
+      <!-- Networking Tools -->
+      <h2 style="grid-column: 1/-1; color: var(--matrix-green); margin-bottom: 1rem;">Networking Tools</h2>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fas fa-network-wired"></i>
+        </div>
+        <h3 class="tool-name">Wireshark</h3>
+        <p class="tool-desc">Network protocol analyzer.</p>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fas fa-wifi"></i>
+        </div>
+        <h3 class="tool-name">Aircrack-ng</h3>
+        <p class="tool-desc">Wireless security toolkit.</p>
+      </div>
+
+      <!-- Development Tools -->
+      <h2 style="grid-column: 1/-1; color: var(--matrix-green); margin-bottom: 1rem;">Development Tools</h2>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fas fa-code"></i>
+        </div>
+        <h3 class="tool-name">Visual Studio Code</h3>
+        <p class="tool-desc">Modern code editor with extensions.</p>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fab fa-git-alt"></i>
+        </div>
+        <h3 class="tool-name">Git</h3>
+        <p class="tool-desc">Distributed version control.</p>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fab fa-docker"></i>
+        </div>
+        <h3 class="tool-name">Docker</h3>
+        <p class="tool-desc">Containerization platform.</p>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fab fa-node"></i>
+        </div>
+        <h3 class="tool-name">Node.js</h3>
+        <p class="tool-desc">Server-side JavaScript runtime.</p>
+      </div>
+
+      <!-- Productivity Tools -->
+      <h2 style="grid-column: 1/-1; color: var(--matrix-green); margin-bottom: 1rem;">Productivity Tools</h2>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fas fa-comments"></i>
+        </div>
+        <h3 class="tool-name">Slack</h3>
+        <p class="tool-desc">Team communication platform.</p>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fas fa-tasks"></i>
+        </div>
+        <h3 class="tool-name">Trello</h3>
+        <p class="tool-desc">Visual task management.</p>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">
+          <i class="fas fa-book"></i>
+        </div>
+        <h3 class="tool-name">Notion</h3>
+        <p class="tool-desc">All-in-one workspace for notes and tasks.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p class="footer-text">© <span id="currentYear"></span> RicheByte // Kanchuka. System Integrity Maintained.</p>
+    <div class="footer-links">
+      <a href="https://github.com/RicheByte" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile">
+        <i class="fab fa-github"></i>
+      </a>
+      <a href="#" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">
+        <i class="fab fa-linkedin"></i>
+      </a>
+      <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Twitter Profile">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="#" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe Profile">
+        <i class="fas fa-terminal"></i>
+      </a>
+    </div>
+  </footer>
+
+  <!-- JavaScript for Mobile Nav Toggle and Year Update -->
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    if (navToggle && navLinks) {
+      navToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        navToggle.classList.toggle('active');
+      });
+
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          if (navLinks.classList.contains('active')) {
+            navLinks.classList.remove('active');
+            navToggle.classList.remove('active');
+          }
+        });
+      });
+    } else {
+      console.error("Nav toggle or nav links element not found.");
+    }
+
+    const currentYearElement = document.getElementById('currentYear');
+    if (currentYearElement) {
+      currentYearElement.textContent = new Date().getFullYear();
+    } else {
+      console.error("Current year element not found.");
+    }
+  </script>
+</body>
+</html>
