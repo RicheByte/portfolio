@@ -585,6 +585,10 @@
             <i class="fas fa-trash-alt"></i>
             <span>Trash</span>
         </div>
+        <div class="desktop-icon-item" onclick="openWindow('cv')">
+            <i class="fas fa-file-pdf" style="color: #e53935;"></i>
+            <span>Resume.pdf</span>
+        </div>
     </div>
 
     <!-- Desktop Widgets -->
@@ -673,6 +677,21 @@
             </ul>
             <p><em>Hint: The terminal holds many secrets. Try 'help'.</em></p>
             <button class="mission-btn" onclick="closeWindow('mission')">ACKNOWLEDGE</button>
+        </div>
+    </div>
+
+    <!-- CV Viewer Window -->
+    <div id="win-cv" class="window" style="top: 10%; left: 20%; width: 800px; height: 800px;">
+        <div class="title-bar">
+            <div class="window-controls">
+                <button class="control-btn close-btn" onclick="closeWindow('cv')"></button>
+                <button class="control-btn min-btn" onclick="minimizeWindow('cv')"></button>
+                <button class="control-btn max-btn"></button>
+            </div>
+            <span class="window-title">Resume Viewer</span>
+        </div>
+        <div class="window-content" style="padding: 0; overflow: hidden; background: #333;">
+            <iframe src="cv.pdf" style="width: 100%; height: 100%; border: none;"></iframe>
         </div>
     </div>
 
@@ -1112,17 +1131,40 @@
         const tmCtx = tmCanvas.getContext('2d');
         let tmInterval;
         let attacks = [];
+        let mapPoints = [];
 
         function resizeThreatMap() {
             tmCanvas.width = tmCanvas.parentElement.clientWidth;
             tmCanvas.height = tmCanvas.parentElement.clientHeight;
+            initMapPoints();
+        }
+
+        function initMapPoints() {
+            mapPoints = [];
+            const cols = 60; // Increased resolution
+            const rows = 30;
+            const xStep = tmCanvas.width / cols;
+            const yStep = tmCanvas.height / rows;
+
+            for(let i=0; i<cols; i++) {
+                for(let j=0; j<rows; j++) {
+                    // Simulate a world map shape (very roughly)
+                    // Denser points for better visibility
+                    if (Math.random() > 0.5 || (i > 15 && i < 45 && j > 8 && j < 22)) {
+                        mapPoints.push({
+                            x: i * xStep + xStep/2,
+                            y: j * yStep + yStep/2
+                        });
+                    }
+                }
+            }
         }
 
         function startThreatMap() {
             resizeThreatMap();
             window.addEventListener('resize', resizeThreatMap);
             if (tmInterval) clearInterval(tmInterval);
-            tmInterval = setInterval(drawThreatMap, 50);
+            tmInterval = setInterval(drawThreatMap, 30);
         }
 
         function stopThreatMap() {
@@ -1131,54 +1173,73 @@
         }
 
         function drawThreatMap() {
-            // Fade background
-            tmCtx.fillStyle = 'rgba(5, 5, 5, 0.1)';
+            // Clear with slight fade for trails
+            tmCtx.fillStyle = 'rgba(10, 10, 10, 0.2)';
             tmCtx.fillRect(0, 0, tmCanvas.width, tmCanvas.height);
 
-            // World Map Outline (Simplified)
-            tmCtx.strokeStyle = '#333';
-            tmCtx.lineWidth = 1;
-            tmCtx.beginPath();
-            // Draw some random lines to simulate map
-            for(let i=0; i<5; i++) {
-                tmCtx.moveTo(Math.random() * tmCanvas.width, Math.random() * tmCanvas.height);
-                tmCtx.lineTo(Math.random() * tmCanvas.width, Math.random() * tmCanvas.height);
+            // Draw Map Points (Static)
+            // Brighter color and larger size for visibility
+            tmCtx.fillStyle = 'rgba(80, 200, 120, 0.3)'; 
+            for (const p of mapPoints) {
+                tmCtx.beginPath();
+                tmCtx.arc(p.x, p.y, 2, 0, Math.PI * 2); // Increased size
+                tmCtx.fill();
             }
-            tmCtx.stroke();
 
-            // Add new attack
-            if (Math.random() > 0.9) {
-                attacks.push({
-                    x: Math.random() * tmCanvas.width,
-                    y: Math.random() * tmCanvas.height,
-                    tx: Math.random() * tmCanvas.width,
-                    ty: Math.random() * tmCanvas.height,
-                    progress: 0,
-                    color: Math.random() > 0.5 ? '#ff0000' : '#00ff00'
-                });
+            // Add new random attack
+            if (Math.random() > 0.92) {
+                const start = mapPoints[Math.floor(Math.random() * mapPoints.length)];
+                const end = mapPoints[Math.floor(Math.random() * mapPoints.length)];
+                if (start && end) {
+                    attacks.push({
+                        x: start.x, y: start.y,
+                        tx: end.x, ty: end.y,
+                        progress: 0,
+                        color: Math.random() > 0.3 ? '#00ff00' : '#ff0000', // Mostly green (defense)
+                        speed: 0.01 + Math.random() * 0.02
+                    });
+                }
             }
 
             // Draw attacks
             for (let i = 0; i < attacks.length; i++) {
                 const a = attacks[i];
-                a.progress += 0.02;
+                a.progress += a.speed;
 
-                const cx = a.x + (a.tx - a.x) * a.progress;
-                const cy = a.y + (a.ty - a.y) * a.progress;
+                // Parabolic arc calculation
+                const dx = a.tx - a.x;
+                const dy = a.ty - a.y;
+                const currentX = a.x + dx * a.progress;
+                const currentY = a.y + dy * a.progress - (Math.sin(a.progress * Math.PI) * 50); // Arc height
 
-                tmCtx.strokeStyle = a.color;
-                tmCtx.lineWidth = 2;
+                // Draw missile head
+                tmCtx.fillStyle = '#fff';
                 tmCtx.beginPath();
-                tmCtx.moveTo(a.x, a.y);
-                tmCtx.lineTo(cx, cy);
+                tmCtx.arc(currentX, currentY, 2, 0, Math.PI * 2);
+                tmCtx.fill();
+
+                // Draw trail (simplified)
+                tmCtx.strokeStyle = a.color;
+                tmCtx.lineWidth = 1;
+                tmCtx.beginPath();
+                tmCtx.moveTo(a.x, a.y); // Ideally track previous pos, but this works for simple visuals
+                tmCtx.lineTo(currentX, currentY);
                 tmCtx.stroke();
 
                 // Impact
                 if (a.progress >= 1) {
-                    tmCtx.fillStyle = a.color;
+                    // Explosion
+                    tmCtx.fillStyle = '#fff';
                     tmCtx.beginPath();
-                    tmCtx.arc(a.tx, a.ty, 5, 0, Math.PI * 2);
+                    tmCtx.arc(a.tx, a.ty, 6, 0, Math.PI * 2);
                     tmCtx.fill();
+                    
+                    // Ripple
+                    tmCtx.strokeStyle = a.color;
+                    tmCtx.beginPath();
+                    tmCtx.arc(a.tx, a.ty, 12, 0, Math.PI * 2);
+                    tmCtx.stroke();
+
                     attacks.splice(i, 1);
                     i--;
                 }
@@ -1186,8 +1247,10 @@
             
             // Stats overlay
             tmCtx.fillStyle = '#0f0';
-            tmCtx.font = '12px monospace';
-            tmCtx.fillText('LIVE THREAT FEED: ' + attacks.length + ' ACTIVE', 10, 20);
+            tmCtx.font = '12px "JetBrains Mono", monospace';
+            tmCtx.fillText('LIVE THREAT FEED: ' + attacks.length + ' ACTIVE EVENTS', 20, 30);
+            tmCtx.fillStyle = '#aaa';
+            tmCtx.fillText('SOURCE: GLOBAL SENSORS', 20, 45);
         }
 
 
