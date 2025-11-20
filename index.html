@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="description" content="RicheByte OS - Kali/Mac Hybrid">
     <title>RicheByte OS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -10,27 +10,55 @@
     <style>
         :root {
             --bg-color: #0a0a0a;
-            --topbar-bg: rgba(10, 10, 10, 0.8);
-            --dock-bg: rgba(20, 20, 20, 0.6);
-            --window-bg: rgba(20, 20, 20, 0.95);
+            --topbar-bg: rgba(10, 10, 10, 0.6);
+            --dock-bg: rgba(20, 20, 20, 0.4);
+            --window-bg: rgba(20, 20, 20, 0.9);
             --accent-color: #20c20e; /* Kali Green */
             --accent-blue: #00d4ff;
             --text-color: #e0e0e0;
-            --border-color: #333;
+            --border-color: rgba(255, 255, 255, 0.1);
         }
 
-        * { box-sizing: border-box; user-select: none; }
+        * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
         
         body {
             margin: 0;
             padding: 0;
             width: 100vw;
             height: 100vh;
-            /* Kali-esque Abstract Wallpaper */
-            background: url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+            /* Local Kali ASCII Wallpaper */
+            background: url('kali-ascii.png') no-repeat center center/cover;
+            background-color: #0a0a0a;
             font-family: 'Inter', sans-serif;
             overflow: hidden;
             color: var(--text-color);
+        }
+
+        /* Boot Screen */
+        #boot-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 99999;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            color: #ccc;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .boot-log {
+            font-size: 0.8rem;
+            line-height: 1.4;
+            color: var(--accent-color);
+            text-shadow: 0 0 5px var(--accent-color);
+        }
+        .boot-cursor {
+            display: inline-block;
+            width: 8px; height: 15px;
+            background: var(--accent-color);
+            animation: blink 1s infinite;
         }
 
         /* Matrix Overlay (Hidden by default) */
@@ -54,7 +82,7 @@
             width: 100%;
             height: 30px;
             background: var(--topbar-bg);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -62,6 +90,7 @@
             z-index: 10000;
             font-size: 0.85rem;
             border-bottom: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
         .top-left { display: flex; gap: 15px; align-items: center; }
@@ -72,7 +101,7 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
         #logo-btn:hover { color: var(--accent-blue); }
 
@@ -89,73 +118,180 @@
 
         #dock {
             background: var(--dock-bg);
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 10px;
+            border-radius: 20px;
+            padding: 10px 15px;
             display: flex;
-            gap: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            gap: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
             transition: width 0.2s;
         }
 
         .dock-item {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             position: relative;
-            background: rgba(255,255,255,0.05);
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255,255,255,0.1);
             color: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         .dock-item:hover {
-            transform: scale(1.2) translateY(-10px);
-            background: rgba(255,255,255,0.15);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: scale(1.2) translateY(-15px);
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            z-index: 10;
         }
 
         .dock-item.active::after {
             content: '';
             position: absolute;
-            bottom: -5px;
-            width: 5px;
-            height: 5px;
-            background: var(--accent-color); /* Green dot for running apps */
+            bottom: -6px;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-color);
             border-radius: 50%;
+            box-shadow: 0 0 5px var(--accent-color);
         }
 
-        /* Tooltip for Dock */
         .dock-item::before {
             content: attr(data-title);
             position: absolute;
-            top: -35px;
+            top: -40px;
             background: rgba(0,0,0,0.8);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.2s;
             white-space: nowrap;
+            border: 1px solid #333;
         }
         .dock-item:hover::before { opacity: 1; }
+
+        /* Desktop Icons */
+        #desktop-icons {
+            position: absolute;
+            top: 50px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        .desktop-icon-item {
+            width: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            transition: opacity 0.2s;
+        }
+        .desktop-icon-item:hover { opacity: 0.8; }
+        .desktop-icon-item i {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            color: #ddd;
+        }
+        .desktop-icon-item span {
+            font-size: 0.85rem;
+            text-align: center;
+            line-height: 1.2;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
+        /* Desktop Widgets */
+        #widget-container {
+            position: absolute;
+            top: 50px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: flex-end;
+            z-index: 5;
+        }
+
+        /* Welcome Widget */
+        .widget-welcome {
+            text-align: right;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        .widget-welcome h1 {
+            font-size: 3rem;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+        .widget-welcome h2 {
+            font-size: 1.2rem;
+            margin: 0;
+            font-weight: 400;
+            opacity: 0.8;
+            color: var(--accent-color);
+        }
+
+        /* System Monitor Widget */
+        .widget-sysmon {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            color: #ccc;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+        .sysmon-row {
+            margin-bottom: 10px;
+        }
+        .sysmon-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        .sysmon-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .sysmon-bar-fill {
+            height: 100%;
+            background: var(--accent-color);
+            width: 0%;
+            transition: width 0.5s;
+        }
 
         /* Windows */
         .window {
             position: absolute;
             background: var(--window-bg);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            border-radius: 12px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.7);
             display: flex;
             flex-direction: column;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
             min-width: 300px;
             min-height: 200px;
             transition: transform 0.15s, opacity 0.15s;
@@ -177,14 +313,14 @@
         }
 
         .title-bar {
-            height: 38px;
+            height: 40px;
             background: linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0));
             border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             padding: 0 15px;
             cursor: default;
-            border-radius: 10px 10px 0 0;
+            border-radius: 12px 12px 0 0;
             position: relative;
         }
 
@@ -213,6 +349,7 @@
             font-size: 0.9rem;
             font-weight: 600;
             color: #ccc;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
         }
 
         .window-content {
@@ -229,10 +366,13 @@
         .project-item {
             background: rgba(0,0,0,0.4);
             padding: 15px;
-            border-radius: 6px;
+            border-radius: 8px;
             margin-bottom: 10px;
             border-left: 3px solid var(--accent-color);
+            transition: background 0.2s;
         }
+        .project-item:hover { background: rgba(0,0,0,0.6); }
+        
         .tech-tag {
             display: inline-block;
             background: rgba(32, 194, 14, 0.15);
@@ -251,7 +391,7 @@
 
         /* Secrets */
         .hidden-flag {
-            display: none; /* Or is it? */
+            display: none;
             color: #333;
             font-size: 0.1px;
         }
@@ -271,9 +411,150 @@
             box-shadow: 0 0 50px var(--accent-color);
         }
 
+        /* Mission Briefing Window */
+        #win-mission {
+            border: 1px solid var(--accent-color);
+            box-shadow: 0 0 20px rgba(32, 194, 14, 0.2);
+        }
+        .mission-text {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-color);
+        }
+        .mission-btn {
+            background: var(--accent-color);
+            color: black;
+            border: none;
+            padding: 8px 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .mission-btn:hover {
+            background: white;
+        }
+
+        /* --- New Apps Styles --- */
+        
+        /* Notepad */
+        #notepad-area {
+            width: 100%;
+            height: 100%;
+            background: #1e1e1e;
+            color: #e0e0e0;
+            border: none;
+            resize: none;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 10px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        /* Calculator */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            height: 100%;
+        }
+        .calc-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .calc-btn:hover { background: rgba(255,255,255,0.2); }
+        .calc-btn.op { background: var(--accent-color); color: black; font-weight: bold; }
+        .calc-btn.eq { background: var(--accent-blue); color: black; font-weight: bold; grid-column: span 2; }
+        #calc-display {
+            grid-column: 1 / -1;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            text-align: right;
+            padding: 10px;
+            font-size: 1.5rem;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Threat Map */
+        #threat-map-canvas {
+            width: 100%;
+            height: 100%;
+            background: #050505;
+        }
+
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+            #dock-container {
+                width: 95%;
+                bottom: 10px;
+            }
+            #dock {
+                width: 100%;
+                justify-content: space-around;
+                gap: 5px;
+                padding: 8px;
+            }
+            .dock-item {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            .dock-item:hover {
+                transform: none; /* Disable scale on mobile */
+            }
+            .dock-item::before {
+                display: none; /* Hide tooltips */
+            }
+
+            #desktop-icons {
+                top: 50px;
+                left: 10px;
+                gap: 15px;
+            }
+            .desktop-icon-item {
+                width: 60px;
+            }
+            .desktop-icon-item i {
+                font-size: 2rem;
+            }
+            .desktop-icon-item span {
+                font-size: 0.7rem;
+            }
+
+            #widget-container {
+                top: 50px;
+                right: 10px;
+                transform: scale(0.7);
+                transform-origin: top right;
+            }
+
+            .window {
+                width: 90% !important;
+                height: 70% !important;
+                top: 10% !important;
+                left: 5% !important;
+            }
+            
+            #root-shell {
+                width: 90%;
+            }
+        }
+
     </style>
 </head>
 <body>
+
+    <!-- Boot Screen -->
+    <div id="boot-screen">
+        <div id="boot-text" class="boot-log"></div>
+        <div class="boot-log">> <span class="boot-cursor"></span></div>
+    </div>
 
     <!-- Matrix Overlay -->
     <div id="matrix-overlay"><canvas id="matrix-canvas"></canvas></div>
@@ -282,15 +563,55 @@
     <div id="top-bar">
         <div class="top-left">
             <div id="logo-btn" onclick="triggerEasterEgg()">
-                <i class="fab fa-linux"></i> <span>RicheByte OS</span>
+                <i class="fab fa-linux" style="font-size: 1.2rem;"></i> <span>RicheByte OS</span>
             </div>
-            <span id="active-app-name" style="font-weight: 600;">Desktop</span>
+            <span id="active-app-name" style="font-weight: 600; opacity: 0.8;">Desktop</span>
         </div>
         <div class="top-right">
             <i class="fas fa-wifi" title="Connected: Secure"></i>
             <i class="fas fa-volume-up"></i>
             <i class="fas fa-battery-full"></i>
             <span id="clock">12:00</span>
+        </div>
+    </div>
+
+    <!-- Desktop Icons -->
+    <div id="desktop-icons">
+        <div class="desktop-icon-item" onclick="alert('Access Denied: System File')">
+            <i class="fas fa-hdd"></i>
+            <span>System</span>
+        </div>
+        <div class="desktop-icon-item" onclick="alert('Trash is empty')">
+            <i class="fas fa-trash-alt"></i>
+            <span>Trash</span>
+        </div>
+    </div>
+
+    <!-- Desktop Widgets -->
+    <div id="widget-container">
+        <!-- Welcome Widget -->
+        <div class="widget-welcome">
+            <h1 id="widget-time">12:00</h1>
+            <h2 id="widget-date">Wednesday, Nov 20</h2>
+        </div>
+
+        <!-- System Monitor Widget -->
+        <div class="widget-sysmon">
+            <div style="border-bottom: 1px solid #444; margin-bottom: 10px; padding-bottom: 5px; font-weight: bold; color: var(--accent-color);">
+                <i class="fas fa-microchip"></i> SYSTEM MONITOR
+            </div>
+            <div class="sysmon-row">
+                <div class="sysmon-label"><span>CPU Load</span><span id="cpu-val">12%</span></div>
+                <div class="sysmon-bar-bg"><div class="sysmon-bar-fill" id="cpu-bar" style="width: 12%;"></div></div>
+            </div>
+            <div class="sysmon-row">
+                <div class="sysmon-label"><span>Memory</span><span id="mem-val">4.2GB</span></div>
+                <div class="sysmon-bar-bg"><div class="sysmon-bar-fill" id="mem-bar" style="width: 45%;"></div></div>
+            </div>
+            <div class="sysmon-row">
+                <div class="sysmon-label"><span>Network</span><span id="net-val">1.2 MB/s</span></div>
+                <div class="sysmon-bar-bg"><div class="sysmon-bar-fill" id="net-bar" style="width: 20%; background: var(--accent-blue);"></div></div>
+            </div>
         </div>
     </div>
 
@@ -306,19 +627,54 @@
             <div class="dock-item" onclick="openWindow('skills')" data-title="Skills">
                 <i class="fas fa-brain" style="color: #ff8a65;"></i>
             </div>
+            <div class="dock-item" onclick="openWindow('notepad')" data-title="Notepad">
+                <i class="fas fa-sticky-note" style="color: #fff59d;"></i>
+            </div>
+            <div class="dock-item" onclick="openWindow('calc')" data-title="Calculator">
+                <i class="fas fa-calculator" style="color: #ffcc80;"></i>
+            </div>
+            <div class="dock-item" onclick="openWindow('threatmap')" data-title="Threat Map">
+                <i class="fas fa-globe-americas" style="color: #f44336;"></i>
+            </div>
+            <div class="dock-item" onclick="openWindow('browser')" data-title="Tor Browser">
+                <i class="fas fa-globe" style="color: #b388ff;"></i>
+            </div>
             <div class="dock-item" onclick="openWindow('software')" data-title="Software Center">
                 <i class="fas fa-box-open" style="color: #a5d6a7;"></i>
             </div>
             <div class="dock-item" onclick="openWindow('terminal')" data-title="Terminal">
                 <i class="fas fa-terminal" style="color: #e0e0e0;"></i>
             </div>
-            <div class="dock-item" onclick="location.href='mailto:contact@richebyte.dev'" data-title="Contact">
-                <i class="fas fa-envelope" style="color: #e57373;"></i>
-            </div>
         </div>
     </div>
 
     <!-- Windows -->
+
+    <!-- Mission Briefing Window -->
+    <div id="win-mission" class="window" style="top: 20%; left: 30%; width: 500px; height: 350px;">
+        <div class="title-bar" style="background: rgba(32, 194, 14, 0.1);">
+            <div class="window-controls">
+                <button class="control-btn close-btn" onclick="closeWindow('mission')"></button>
+                <button class="control-btn min-btn" onclick="minimizeWindow('mission')"></button>
+                <button class="control-btn max-btn"></button>
+            </div>
+            <span class="window-title" style="color: var(--accent-color);">MISSION BRIEFING</span>
+        </div>
+        <div class="window-content mission-text">
+            <h3 style="margin-top: 0;">> INCOMING TRANSMISSION...</h3>
+            <p>Agent,</p>
+            <p>Welcome to the RicheByte OS secure environment. You have successfully bypassed the firewall.</p>
+            <p><strong>YOUR OBJECTIVES:</strong></p>
+            <ul style="list-style-type: square;">
+                <li>Explore the <strong>Projects</strong> directory to analyze our tools.</li>
+                <li>Use the <strong>Tor Browser</strong> to access the external portfolio.</li>
+                <li>Monitor global activity via the <strong>Threat Map</strong>.</li>
+                <li>Locate the hidden flags embedded in the system.</li>
+            </ul>
+            <p><em>Hint: The terminal holds many secrets. Try 'help'.</em></p>
+            <button class="mission-btn" onclick="closeWindow('mission')">ACKNOWLEDGE</button>
+        </div>
+    </div>
 
     <!-- About Window -->
     <div id="win-about" class="window" style="top: 15%; left: 15%; width: 500px; height: 400px;">
@@ -338,7 +694,6 @@
             </div>
             <p>Hello! I'm Kanchuka. I focus on cybersecurity and creative development because I'm genuinely curious about how digital systems work and how to make them secure.</p>
             <p>My work involves studying network protocols, concentrating on writing secure code, and understanding both offensive and defensive security techniques.</p>
-            <!-- Hidden Flag 1 -->
             <span class="hidden-flag">flag{h0v3r_m4st3r_f0und_m3}</span>
         </div>
     </div>
@@ -409,6 +764,85 @@
         </div>
     </div>
 
+    <!-- Notepad Window -->
+    <div id="win-notepad" class="window" style="top: 30%; left: 40%; width: 400px; height: 300px;">
+        <div class="title-bar">
+            <div class="window-controls">
+                <button class="control-btn close-btn" onclick="closeWindow('notepad')"></button>
+                <button class="control-btn min-btn" onclick="minimizeWindow('notepad')"></button>
+                <button class="control-btn max-btn"></button>
+            </div>
+            <span class="window-title">Notepad</span>
+        </div>
+        <div class="window-content" style="padding: 0;">
+            <textarea id="notepad-area" placeholder="Type your notes here... (Auto-saved)"></textarea>
+        </div>
+    </div>
+
+    <!-- Calculator Window -->
+    <div id="win-calc" class="window" style="top: 35%; left: 45%; width: 250px; height: 350px;">
+        <div class="title-bar">
+            <div class="window-controls">
+                <button class="control-btn close-btn" onclick="closeWindow('calc')"></button>
+                <button class="control-btn min-btn" onclick="minimizeWindow('calc')"></button>
+                <button class="control-btn max-btn"></button>
+            </div>
+            <span class="window-title">Calculator</span>
+        </div>
+        <div class="window-content">
+            <div class="calc-grid">
+                <div id="calc-display">0</div>
+                <button class="calc-btn" onclick="calcInput('C')">C</button>
+                <button class="calc-btn" onclick="calcInput('/')">/</button>
+                <button class="calc-btn" onclick="calcInput('*')">*</button>
+                <button class="calc-btn" onclick="calcInput('-')">-</button>
+                <button class="calc-btn" onclick="calcInput('7')">7</button>
+                <button class="calc-btn" onclick="calcInput('8')">8</button>
+                <button class="calc-btn" onclick="calcInput('9')">9</button>
+                <button class="calc-btn op" onclick="calcInput('+')">+</button>
+                <button class="calc-btn" onclick="calcInput('4')">4</button>
+                <button class="calc-btn" onclick="calcInput('5')">5</button>
+                <button class="calc-btn" onclick="calcInput('6')">6</button>
+                <button class="calc-btn" onclick="calcInput('.')">.</button>
+                <button class="calc-btn" onclick="calcInput('1')">1</button>
+                <button class="calc-btn" onclick="calcInput('2')">2</button>
+                <button class="calc-btn" onclick="calcInput('3')">3</button>
+                <button class="calc-btn" onclick="calcInput('0')">0</button>
+                <button class="calc-btn eq" onclick="calcInput('=')">=</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Threat Map Window -->
+    <div id="win-threatmap" class="window" style="top: 10%; left: 10%; width: 800px; height: 500px;">
+        <div class="title-bar">
+            <div class="window-controls">
+                <button class="control-btn close-btn" onclick="closeWindow('threatmap')"></button>
+                <button class="control-btn min-btn" onclick="minimizeWindow('threatmap')"></button>
+                <button class="control-btn max-btn"></button>
+            </div>
+            <span class="window-title">Global Threat Map (Live)</span>
+        </div>
+        <div class="window-content" style="padding: 0; overflow: hidden;">
+            <canvas id="threat-map-canvas"></canvas>
+        </div>
+    </div>
+
+    <!-- Browser Window (Iframe) -->
+    <div id="win-browser" class="window" style="top: 10%; left: 15%; width: 900px; height: 600px;">
+        <div class="title-bar">
+            <div class="window-controls">
+                <button class="control-btn close-btn" onclick="closeWindow('browser')"></button>
+                <button class="control-btn min-btn" onclick="minimizeWindow('browser')"></button>
+                <button class="control-btn max-btn"></button>
+            </div>
+            <span class="window-title">Tor Browser - Private Browsing</span>
+        </div>
+        <div class="window-content" style="padding: 0; overflow: hidden; background: white;">
+            <iframe src="webpage.html" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
+    </div>
+
     <!-- Software Center Window (Iframe) -->
     <div id="win-software" class="window" style="top: 15%; left: 35%; width: 800px; height: 600px;">
         <div class="title-bar">
@@ -448,6 +882,47 @@
     </div>
 
     <script>
+        // --- Boot Sequence ---
+        const bootScreen = document.getElementById('boot-screen');
+        const bootText = document.getElementById('boot-text');
+        const logs = [
+            "Initializing RicheByte OS Kernel v5.15.0...",
+            "Loading modules: [ OK ]",
+            "Mounting root filesystem... [ OK ]",
+            "Starting network services... [ OK ]",
+            "Establishing secure connection... [ OK ]",
+            "Bypassing firewalls... [ SUCCESS ]",
+            "Loading graphical interface...",
+            "Welcome, Agent."
+        ];
+
+        async function runBootSequence() {
+            // Check if already booted this session
+            if (sessionStorage.getItem('booted')) {
+                bootScreen.style.display = 'none';
+                return;
+            }
+
+            for (const log of logs) {
+                const p = document.createElement('div');
+                p.innerText = log;
+                bootText.appendChild(p);
+                await new Promise(r => setTimeout(r, 400));
+            }
+            
+            await new Promise(r => setTimeout(r, 1000));
+            bootScreen.style.opacity = '0';
+            setTimeout(() => {
+                bootScreen.style.display = 'none';
+                openWindow('mission'); // Open mission briefing after boot
+            }, 1000);
+            
+            sessionStorage.setItem('booted', 'true');
+        }
+
+        window.addEventListener('load', runBootSequence);
+
+
         // --- Window Management ---
         let zIndex = 100;
         const activeAppName = document.getElementById('active-app-name');
@@ -471,6 +946,9 @@
 
             win.classList.add('open');
             focusWindow(id);
+            
+            // Init app specific logic
+            if (id === 'threatmap') startThreatMap();
         }
 
         function closeWindow(id) {
@@ -482,6 +960,9 @@
             if (dockItem) dockItem.classList.remove('active');
             
             activeAppName.innerText = 'Desktop';
+            
+            // Stop app specific logic
+            if (id === 'threatmap') stopThreatMap();
         }
 
         function minimizeWindow(id) {
@@ -495,16 +976,16 @@
             zIndex++;
             win.style.zIndex = zIndex;
             
-            // Update Top Bar
             const title = win.querySelector('.window-title').innerText;
             activeAppName.innerText = title;
         }
 
-        // --- Dragging Logic ---
+        // --- Dragging Logic (Mouse & Touch) ---
         let isDragging = false;
         let currentWin = null;
         let offset = { x: 0, y: 0 };
 
+        // Mouse Events
         document.querySelectorAll('.title-bar').forEach(bar => {
             bar.addEventListener('mousedown', (e) => {
                 if (e.target.closest('.window-controls')) return;
@@ -518,6 +999,18 @@
                 offset.x = e.clientX - currentWin.offsetLeft;
                 offset.y = e.clientY - currentWin.offsetTop;
             });
+
+            // Touch Events
+            bar.addEventListener('touchstart', (e) => {
+                if (e.target.closest('.window-controls')) return;
+                isDragging = true;
+                currentWin = bar.closest('.window');
+                const id = currentWin.id.replace('win-', '');
+                focusWindow(id);
+                const touch = e.touches[0];
+                offset.x = touch.clientX - currentWin.offsetLeft;
+                offset.y = touch.clientY - currentWin.offsetTop;
+            }, {passive: false});
         });
 
         document.addEventListener('mousemove', (e) => {
@@ -527,30 +1020,178 @@
             let x = e.clientX - offset.x;
             let y = e.clientY - offset.y;
             
-            // Keep within bounds (rough)
-            if (y < 30) y = 30; // Below top bar
+            if (y < 30) y = 30;
             
             currentWin.style.left = x + 'px';
             currentWin.style.top = y + 'px';
         });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging || !currentWin) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            let x = touch.clientX - offset.x;
+            let y = touch.clientY - offset.y;
+            if (y < 30) y = 30;
+            currentWin.style.left = x + 'px';
+            currentWin.style.top = y + 'px';
+        }, {passive: false});
 
         document.addEventListener('mouseup', () => {
             isDragging = false;
             currentWin = null;
         });
 
-        // --- Clock ---
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+            currentWin = null;
+        });
+
+        // --- Clock & Widgets ---
         function updateClock() {
             const now = new Date();
             const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             document.getElementById('clock').innerText = timeString;
+            document.getElementById('widget-time').innerText = timeString;
+            
+            const options = { weekday: 'long', month: 'short', day: 'numeric' };
+            document.getElementById('widget-date').innerText = now.toLocaleDateString('en-US', options);
         }
         setInterval(updateClock, 1000);
         updateClock();
 
+        // --- System Monitor Simulation ---
+        function updateSysMon() {
+            // CPU
+            const cpu = Math.floor(Math.random() * 30) + 5;
+            document.getElementById('cpu-val').innerText = cpu + '%';
+            document.getElementById('cpu-bar').style.width = cpu + '%';
+
+            // Memory (Static-ish)
+            const mem = Math.floor(Math.random() * 5) + 40;
+            document.getElementById('mem-bar').style.width = mem + '%';
+
+            // Network
+            const net = (Math.random() * 2).toFixed(1);
+            document.getElementById('net-val').innerText = net + ' MB/s';
+            document.getElementById('net-bar').style.width = (net * 10) + '%';
+        }
+        setInterval(updateSysMon, 2000);
+
+
+        // --- Notepad Logic ---
+        const notepadArea = document.getElementById('notepad-area');
+        notepadArea.value = localStorage.getItem('richebyte_notes') || '';
+        notepadArea.addEventListener('input', () => {
+            localStorage.setItem('richebyte_notes', notepadArea.value);
+        });
+
+        // --- Calculator Logic ---
+        let calcExpression = '';
+        function calcInput(val) {
+            const display = document.getElementById('calc-display');
+            if (val === 'C') {
+                calcExpression = '';
+                display.innerText = '0';
+            } else if (val === '=') {
+                try {
+                    calcExpression = eval(calcExpression).toString();
+                    display.innerText = calcExpression;
+                } catch {
+                    display.innerText = 'Error';
+                    calcExpression = '';
+                }
+            } else {
+                calcExpression += val;
+                display.innerText = calcExpression;
+            }
+        }
+
+        // --- Threat Map Logic ---
+        const tmCanvas = document.getElementById('threat-map-canvas');
+        const tmCtx = tmCanvas.getContext('2d');
+        let tmInterval;
+        let attacks = [];
+
+        function resizeThreatMap() {
+            tmCanvas.width = tmCanvas.parentElement.clientWidth;
+            tmCanvas.height = tmCanvas.parentElement.clientHeight;
+        }
+
+        function startThreatMap() {
+            resizeThreatMap();
+            window.addEventListener('resize', resizeThreatMap);
+            if (tmInterval) clearInterval(tmInterval);
+            tmInterval = setInterval(drawThreatMap, 50);
+        }
+
+        function stopThreatMap() {
+            if (tmInterval) clearInterval(tmInterval);
+            window.removeEventListener('resize', resizeThreatMap);
+        }
+
+        function drawThreatMap() {
+            // Fade background
+            tmCtx.fillStyle = 'rgba(5, 5, 5, 0.1)';
+            tmCtx.fillRect(0, 0, tmCanvas.width, tmCanvas.height);
+
+            // World Map Outline (Simplified)
+            tmCtx.strokeStyle = '#333';
+            tmCtx.lineWidth = 1;
+            tmCtx.beginPath();
+            // Draw some random lines to simulate map
+            for(let i=0; i<5; i++) {
+                tmCtx.moveTo(Math.random() * tmCanvas.width, Math.random() * tmCanvas.height);
+                tmCtx.lineTo(Math.random() * tmCanvas.width, Math.random() * tmCanvas.height);
+            }
+            tmCtx.stroke();
+
+            // Add new attack
+            if (Math.random() > 0.9) {
+                attacks.push({
+                    x: Math.random() * tmCanvas.width,
+                    y: Math.random() * tmCanvas.height,
+                    tx: Math.random() * tmCanvas.width,
+                    ty: Math.random() * tmCanvas.height,
+                    progress: 0,
+                    color: Math.random() > 0.5 ? '#ff0000' : '#00ff00'
+                });
+            }
+
+            // Draw attacks
+            for (let i = 0; i < attacks.length; i++) {
+                const a = attacks[i];
+                a.progress += 0.02;
+
+                const cx = a.x + (a.tx - a.x) * a.progress;
+                const cy = a.y + (a.ty - a.y) * a.progress;
+
+                tmCtx.strokeStyle = a.color;
+                tmCtx.lineWidth = 2;
+                tmCtx.beginPath();
+                tmCtx.moveTo(a.x, a.y);
+                tmCtx.lineTo(cx, cy);
+                tmCtx.stroke();
+
+                // Impact
+                if (a.progress >= 1) {
+                    tmCtx.fillStyle = a.color;
+                    tmCtx.beginPath();
+                    tmCtx.arc(a.tx, a.ty, 5, 0, Math.PI * 2);
+                    tmCtx.fill();
+                    attacks.splice(i, 1);
+                    i--;
+                }
+            }
+            
+            // Stats overlay
+            tmCtx.fillStyle = '#0f0';
+            tmCtx.font = '12px monospace';
+            tmCtx.fillText('LIVE THREAT FEED: ' + attacks.length + ' ACTIVE', 10, 20);
+        }
+
+
         // --- Easter Eggs ---
-        
-        // 1. Konami Code
         const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
         let konamiIndex = 0;
 
@@ -566,7 +1207,6 @@
             }
         });
 
-        // 2. Matrix Rain Trigger
         let clickCount = 0;
         function triggerEasterEgg() {
             clickCount++;

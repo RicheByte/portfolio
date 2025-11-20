@@ -1,0 +1,959 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Add a brief description for SEO -->
+    <meta name="description" content="RicheByte - Cybersecurity Portfolio showcasing skills, projects, and services in the digital security domain.">
+    <title>RicheByte - Cyber Portfolio.exe</title>
+    <!-- Font Awesome for Icons (optional, but recommended for visual appeal) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Typed.js for typing animation -->
+    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+
+    <style>
+        :root {
+            --terminal-green: #00ff00;
+            --matrix-green: #20c20e;
+            --background: #000;
+            --nav-height: 70px;
+            --neon-blue: #00d4ff;
+            --neon-purple: #ff00ff;
+            --accent: #ff007f;
+            --text-color: rgba(32, 194, 14, 0.85); /* Slightly increased opacity */
+            --card-bg: rgba(0, 0, 0, 0.85);
+            --border-color: rgba(0, 255, 0, 0.5); /* Less intense border */
+        }
+
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Courier New", monospace;
+        }
+
+        html {
+            scroll-behavior: smooth; /* Ensure smooth scroll works */
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            font-size: 16px;
+        }
+
+        /* Matrix Background (Subtle) */
+        .matrix-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px), /* Reduced opacity */
+                linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
+            background-size: 25px 25px; /* Slightly larger grid */
+            pointer-events: none;
+            z-index: -1;
+            animation: matrixRain 25s linear infinite; /* Slower animation */
+        }
+
+        @keyframes matrixRain {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100vh; } /* Adjusted distance */
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: rgba(0, 0, 0, 0.95); /* Slightly more opaque */
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between; /* Space for logo/toggle */
+            align-items: center;
+            padding: 0 2rem; /* Add padding */
+            box-shadow: 0 2px 15px rgba(0, 255, 0, 0.2); /* Subtler shadow */
+        }
+
+        .nav-logo a { /* Added logo placeholder */
+            color: var(--matrix-green);
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            text-shadow: 0 0 5px var(--matrix-green);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem; /* Slightly reduced gap */
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--matrix-green);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: bold;
+            position: relative;
+            padding: 0.5rem 0; /* Adjusted padding */
+            transition: all 0.3s ease;
+            font-size: 0.9rem; /* Slightly smaller font */
+        }
+
+        .nav-link:hover {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px; /* Position below text */
+            left: 0;
+            background: var(--neon-blue);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Mobile Nav Toggle */
+        .nav-toggle {
+            display: none; /* Hidden by default on larger screens */
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: var(--matrix-green);
+            margin: 5px 0;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Mobile Nav Styles */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; /* Hide links by default */
+                position: absolute;
+                top: var(--nav-height);
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.98); /* Darker background for clarity */
+                flex-direction: column;
+                align-items: center;
+                padding: 1rem 0;
+                border-top: 1px solid var(--border-color);
+            }
+
+            .nav-links.active {
+                display: flex; /* Show when active */
+            }
+
+            .nav-link {
+                padding: 1rem 0;
+                font-size: 1rem;
+            }
+
+            .nav-toggle {
+                display: block; /* Show toggle on mobile */
+            }
+
+            /* Animate hamburger to 'X' */
+            .nav-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+            .nav-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+            .nav-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -6px);
+            }
+        }
+
+        /* Hero Section */
+        .hero-banner {
+            min-height: 100vh; /* Use min-height for flexibility */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, rgba(32, 194, 14, 0.1) 0%, var(--background) 75%);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            padding: var(--nav-height) 1rem 2rem; /* Add padding top for nav */
+        }
+
+        .hero-banner h1 {
+            font-size: clamp(2.5rem, 10vw, 4.5rem); /* Responsive font size */
+            color: var(--matrix-green);
+            text-shadow: 0 0 15px var(--matrix-green), 0 0 30px var(--neon-blue);
+            margin-bottom: 0.5rem;
+            animation: glitch 3s infinite alternate ease-in-out; /* Slower, alternating glitch */
+        }
+
+        .hero-subtitle { /* Using a span for the typing effect */
+            font-size: clamp(1.2rem, 5vw, 1.8rem);
+            margin: 1rem 0;
+            color: var(--neon-purple);
+            min-height: 2.5rem; /* Reserve space for typed text */
+        }
+
+        .hero-cta {
+            margin-top: 2rem;
+            padding: 0.8rem 2.5rem; /* Adjusted padding */
+            background: transparent;
+            border: 2px solid var(--matrix-green);
+            color: var(--matrix-green);
+            text-transform: uppercase;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-size: 1rem;
+        }
+
+        .hero-cta:hover {
+            background: var(--matrix-green);
+            color: var(--background);
+            box-shadow: 0 0 25px var(--matrix-green);
+            transform: scale(1.05) translateY(-3px); /* Added Y translation */
+        }
+
+        @keyframes glitch { /* Subtler Glitch */
+          2%, 64% { transform: translate(2px, 0) skew(0deg); }
+          4%, 60% { transform: translate(-2px, 0) skew(0deg); }
+          62% { transform: translate(0, 0) skew(5deg); }
+          95% { text-shadow: 0 0 15px var(--matrix-green), 0 0 30px var(--neon-blue); }
+          96% { text-shadow: -2px 0 var(--accent), 2px 0 var(--neon-blue), 0 0 15px var(--matrix-green); }
+          97% { text-shadow: 2px 0 var(--accent), -2px 0 var(--neon-blue), 0 0 15px var(--matrix-green); }
+          100% { text-shadow: 0 0 15px var(--matrix-green), 0 0 30px var(--neon-blue); }
+        }
+
+        /* Section Common Styles */
+        section {
+            padding: 6rem 2rem 4rem; /* Increased top padding */
+            max-width: 1100px; /* Slightly narrower max-width */
+            margin: 0 auto;
+            opacity: 0; /* Start hidden for scroll animation */
+            transform: translateY(30px); /* Start slightly lower */
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        section.visible { /* Class added by JS */
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        .section-title {
+            font-size: clamp(2rem, 6vw, 2.5rem); /* Responsive title */
+            text-align: center;
+            margin-bottom: 3.5rem; /* Increased margin */
+            color: var(--matrix-green); /* Simpler color */
+            text-shadow: 0 0 8px var(--neon-blue);
+            position: relative;
+        }
+
+        .section-title::before { /* Terminal cursor effect */
+             content: '_';
+             display: inline-block;
+             margin-left: 5px;
+             animation: blink 1s infinite;
+             color: var(--neon-blue);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 80px; /* Shorter line */
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--matrix-green), transparent); /* Gradient line */
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @keyframes blink {
+           0%, 100% { opacity: 1; }
+           50% { opacity: 0; }
+        }
+
+        /* About Me Section */
+        .about-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3rem; /* Increased gap */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .about-image {
+            flex: 1 1 250px; /* Adjusted flex basis */
+            max-width: 280px; /* Slightly smaller max */
+            text-align: center; /* Center image within flex item */
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 50%;
+            border: 3px solid var(--matrix-green);
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.4);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            /* Add loading lazy for performance */
+            /* loading="lazy" attribute belongs on the HTML img tag, not in CSS */
+        }
+        .about-image img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(0, 212, 255, 0.6); /* Neon blue glow on hover */
+        }
+
+        .about-text {
+            flex: 2 1 450px;
+            font-size: 1.05rem; /* Slightly adjusted */
+            color: var(--text-color);
+        }
+        .about-text p {
+             margin-bottom: 1rem; /* Add space between paragraphs */
+        }
+
+        /* Skills Section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Smaller minmax */
+            gap: 1.5rem;
+        }
+
+        .skill-card {
+            background: var(--card-bg);
+            padding: 1.8rem 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-8px) scale(1.03); /* Combined transform */
+            box-shadow: 0 0 20px var(--neon-blue);
+            border-color: var(--neon-blue);
+        }
+
+        .skill-icon { /* Using Font Awesome */
+            font-size: 2.8rem; /* Adjusted size */
+            margin-bottom: 1rem;
+            color: var(--matrix-green);
+            transition: color 0.3s ease;
+            filter: drop-shadow(0 0 8px var(--matrix-green));
+        }
+        .skill-card:hover .skill-icon {
+            color: var(--neon-blue);
+             filter: drop-shadow(0 0 12px var(--neon-blue));
+        }
+
+        .skill-name {
+            font-size: 1.3rem;
+            color: #eee; /* Lighter color for name */
+            margin-bottom: 0.8rem;
+        }
+
+        /* Removed skill level bar for simplicity, add back if needed */
+        .skill-description { /* Added description area */
+             font-size: 0.9rem;
+             color: var(--text-color);
+        }
+
+
+        /* Projects Section */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            padding: 1.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column; /* Stack content vertically */
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3); /* Neon blue shadow */
+            border-color: var(--neon-blue);
+        }
+
+        .project-title {
+            font-size: 1.4rem; /* Adjusted size */
+            color: var(--neon-blue);
+            margin-bottom: 0.8rem;
+        }
+
+        .project-desc {
+            font-size: 0.95rem;
+            color: var(--text-color);
+            flex-grow: 1; /* Allow description to take available space */
+            margin-bottom: 1rem;
+        }
+
+        .project-tech {
+            font-size: 0.85rem;
+            color: var(--neon-purple);
+            margin-top: auto; /* Push tech and links to the bottom */
+            margin-bottom: 1rem;
+        }
+        .project-tech strong {
+            color: #fff; /* Make 'Tech:' standout */
+        }
+
+        .project-links { /* Added links area */
+             display: flex;
+             gap: 1rem;
+             margin-top: 1rem;
+        }
+         .project-links a {
+             color: var(--matrix-green);
+             text-decoration: none;
+             font-size: 0.9rem;
+             transition: color 0.3s ease, text-shadow 0.3s ease;
+         }
+         .project-links a:hover {
+             color: var(--neon-blue);
+             text-shadow: 0 0 5px var(--neon-blue);
+         }
+         .project-links i { /* Style for Font Awesome icons */
+             margin-right: 5px;
+         }
+
+        /* Services Section */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            padding: 2rem 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.3);
+            border-color: var(--neon-blue);
+        }
+
+        .service-icon { /* Using Font Awesome */
+            font-size: 2.8rem; /* Adjusted size */
+            margin-bottom: 1.2rem;
+            color: var(--neon-blue);
+            filter: drop-shadow(0 0 10px var(--neon-blue));
+            transition: transform 0.3s ease;
+        }
+        .service-card:hover .service-icon {
+             transform: scale(1.1);
+        }
+
+        .service-title {
+            font-size: 1.4rem; /* Adjusted size */
+            margin-bottom: 0.8rem;
+            color: #eee; /* Lighter color */
+        }
+
+        .service-desc {
+            font-size: 0.95rem;
+            color: var(--text-color);
+        }
+
+        /* Testimonials Section */
+        .testimonials-container { /* Changed class name */
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem; /* Increased gap */
+            align-items: center;
+        }
+
+        .testimonial {
+            background: var(--card-bg);
+            padding: 2rem 2.5rem; /* Increased padding */
+            border-left: 4px solid var(--matrix-green); /* Accent border */
+            border-radius: 8px;
+            max-width: 750px;
+            font-style: italic;
+            color: var(--text-color);
+            position: relative;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+            transition: border-color 0.3s ease;
+        }
+         .testimonial:hover {
+             border-left-color: var(--neon-purple);
+         }
+
+        .testimonial::before { /* Quote styling */
+            content: "“";
+            font-size: 4rem; /* Larger quote */
+            position: absolute;
+            top: 0.5rem; /* Adjusted position */
+            left: 0.8rem;
+            color: var(--neon-purple);
+            opacity: 0.5;
+            line-height: 1;
+        }
+
+         .testimonial-text { /* Wrap text in a p tag */
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+         }
+         .testimonial-author { /* Style the author */
+             font-style: normal;
+             text-align: right;
+             font-weight: bold;
+             color: var(--matrix-green);
+         }
+
+        /* Contact Section */
+        .contact-form {
+            max-width: 650px; /* Slightly wider */
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem; /* Increased margin */
+            color: var(--neon-blue);
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.9rem; /* Increased padding */
+            background: rgba(32, 194, 14, 0.05); /* Subtler background */
+            border: 1px solid var(--matrix-green);
+            color: var(--matrix-green);
+            font-family: "Courier New", monospace;
+            border-radius: 4px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(0, 255, 0, 0.4); /* Lighter placeholder */
+        }
+         .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: var(--matrix-green);
+            border: none;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 1rem;
+            border-radius: 4px;
+        }
+
+        .submit-btn:hover {
+            background: var(--neon-blue);
+            color: var(--background); /* Ensure text is readable */
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        /* Footer */
+        .site-footer {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 2.5rem 1rem; /* Increased padding */
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem; /* Add space before footer */
+        }
+        .footer-text {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a {
+            color: var(--matrix-green);
+            margin: 0 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.5rem; /* Larger icons */
+        }
+
+        .footer-links a:hover {
+            color: var(--neon-blue);
+            transform: scale(1.1); /* Scale icon on hover */
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="matrix-grid"></div>
+
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-logo">
+            <a href="#home">RicheByte</a> <!-- Simple Text Logo -->
+        </div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#home" class="nav-link">Home</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#skills" class="nav-link">Skills</a></li>
+            <li><a href="#projects" class="nav-link">Projects</a></li>
+            <li><a href="#services" class="nav-link">Services</a></li>
+            <li><a href="https://hacker.super.site/" class="nav-link">Blog</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+            <li><a href="graphic.html" class="nav-link">Design</a></li>
+            <!-- Add link to the new tools page -->
+            <li><a href="software.html" class="nav-link">Tools</a></li>
+        </ul>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-banner">
+        <h1>[RICHEBYTE]</h1>
+        <!-- Subtitle area for typing effect -->
+        <p class="hero-subtitle"><span id="typed-subtitle"></span></p>
+        <button class="hero-cta" onclick="document.getElementById('about').scrollIntoView({ behavior: 'smooth' })">
+            > Initiate Scan_ // Explore
+        </button>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about">
+        <h2 class="section-title">> About_Me</h2>
+        <div class="about-container">
+            <div class="about-image">
+                <!-- IMPORTANT: Replace 'placeholder-me.png' with the actual path to your image -->
+                <img src="me.png" alt="Kanchuka - Cybersecurity Enthusiast & Developer" />
+            </div>
+            <div class="about-text">
+                 <!-- Update this text with your personal bio -->
+                <p>Hello, I'm Kanchuka (or RicheByte online). I focus on cybersecurity and creative development because I'm genuinely curious about how digital systems work and how to make them secure.</p>
+<p>My work involves studying network protocols, concentrating on writing secure code, and understanding both offensive and defensive security techniques. I believe it's important to create systems that are strong and safe, but also easy and intuitive to use.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills">
+        <h2 class="section-title">> Skillset_Matrix</h2>
+        <div class="skills-grid">
+            <!-- Skill Card 1: Programming -->
+            <div class="skill-card">
+                <span class="skill-icon"><i class="fas fa-code"></i></span> <!-- Font Awesome Icon -->
+                <h3 class="skill-name">Programming & Scripting</h3>
+                <!-- Optional: Add a brief description -->
+                <p class="skill-description">Proficient in Python, JavaScript, Bash for automation, tool development, and web applications.</p>
+            </div>
+            <!-- Skill Card 2: Cybersecurity -->
+            <div class="skill-card">
+                <span class="skill-icon"><i class="fas fa-shield-halved"></i></span> <!-- Font Awesome Icon -->
+                <h3 class="skill-name">Cybersecurity</h3>
+                 <p class="skill-description">Network security, vulnerability assessment, penetration testing fundamentals, security audits, incident response concepts.</p>
+            </div>
+            <!-- Skill Card 3: Networking -->
+            <div class="skill-card">
+                <span class="skill-icon"><i class="fas fa-network-wired"></i></span> <!-- Font Awesome Icon -->
+                <h3 class="skill-name">Networking</h3>
+                 <p class="skill-description">TCP/IP stack, routing, switching, firewall configuration, VPNs, network analysis tools (Wireshark).</p>
+            </div>
+            <!-- Add more skill cards as needed -->
+             <div class="skill-card">
+                <span class="skill-icon"><i class="fas fa-terminal"></i></span> <!-- Font Awesome Icon -->
+                <h3 class="skill-name">Operating Systems</h3>
+                 <p class="skill-description">Linux (Debian/Ubuntu, Kali), Windows Server/Desktop administration and hardening.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+        <h2 class="section-title">> Project_Showcase</h2>
+        <div class="projects-grid">
+            <!-- Project Card 1 -->
+            <div class="project-card">
+                <h3 class="project-title">Stealth Network Scanner</h3>
+                <p class="project-desc">Developed a Python-based network scanner using Scapy library capable of various scan types (TCP SYN, UDP) with options for stealth techniques to minimize detection during assessments.</p>
+                <p class="project-tech"><strong>Tech:</strong> Python, Scapy, Argparse</p>
+                <div class="project-links">
+                     <!-- IMPORTANT: Replace '#' with actual links -->
+                    <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> View Code</a>
+                    <!-- <a href="#" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> Live Demo</a> -->
+                </div>
+            </div>
+            <!-- Project Card 2 -->
+            <div class="project-card">
+                <h3 class="project-title">Secure File Encryptor</h3>
+                <p class="project-desc">A command-line tool written in Python for encrypting and decrypting files using AES-GCM, providing both confidentiality and integrity. Includes secure password handling via hashing.</p>
+                <p class="project-tech"><strong>Tech:</strong> Python, Cryptography library, hashlib</p>
+                 <div class="project-links">
+                    <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> View Code</a>
+                </div>
+            </div>
+             <!-- Add More Project Cards -->
+             <div class="project-card">
+                <h3 class="project-title">Web Vulnerability Dashboard (Concept)</h3>
+                <p class="project-desc">Designed a concept for a web dashboard using Flask/Django to aggregate results from various security scanning tools (e.g., Nmap, Nikto) providing a unified view of potential vulnerabilities.</p>
+                <p class="project-tech"><strong>Tech:</strong> Python (Flask/Django - Planning), HTML, CSS, JavaScript</p>
+                 <div class="project-links">
+                    <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> View Design/Repo</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services">
+        <h2 class="section-title">> Service_Offerings</h2>
+        <div class="services-grid">
+            <!-- Service Card 1 -->
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-user-secret"></i></div> <!-- Font Awesome Icon -->
+                <h3 class="service-title">Penetration Testing (Basic)</h3>
+                <p class="service-desc">Simulated cyber attacks to identify vulnerabilities in networks and web applications (Ethical hacking focus).</p>
+            </div>
+             <!-- Service Card 2 -->
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-clipboard-check"></i></div> <!-- Font Awesome Icon -->
+                <h3 class="service-title">Security Audits</h3>
+                <p class="service-desc">Reviewing configurations, policies, and infrastructure against security best practices to identify gaps.</p>
+            </div>
+            <!-- Service Card 3 -->
+            <div class="service-card">
+                 <div class="service-icon"><i class="fas fa-laptop-code"></i></div> <!-- Font Awesome Icon -->
+                <h3 class="service-title">Secure Development Consulting</h3>
+                <p class="service-desc">Guidance on incorporating security principles (OWASP Top 10, secure coding) into the software development lifecycle.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials">
+        <h2 class="section-title">> Client_Feedback // Echoes</h2>
+        <div class="testimonials-container">
+             <!-- Testimonial 1 -->
+            <div class="testimonial">
+                 <!-- IMPORTANT: Replace with real testimonial text and author -->
+                <p class="testimonial-text">"RicheByte's insights into our network security were invaluable. Their detailed report helped us prioritize critical fixes. Professional and technically proficient."</p>
+                <p class="testimonial-author">- Chamod Abe, CTO @ Weddings by abe Ltd.</p>
+            </div>
+             <!-- Testimonial 2 -->
+             <div class="testimonial">
+                  <!-- IMPORTANT: Replace with real testimonial text and author -->
+                <p class="testimonial-text">"Working with Kanchuka on secure code practices significantly improved our application's resilience. Clear communication and practical advice."</p>
+                <p class="testimonial-author">- Chamal, Lead Developer </p>
+            </div>
+             <!-- Add more testimonials if available -->
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <h2 class="section-title">> Establish_Contact // Send Signal</h2>
+         <!-- IMPORTANT: This form requires backend code or a service like Formspree/Netlify Forms to actually send emails. -->
+        <form class="contact-form" id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST"> <!-- Example Formspree endpoint -->
+            <div class="form-group">
+                <label for="name">Name // Alias:</label>
+                <input type="text" id="name" name="name" placeholder="Enter your designation" required />
+            </div>
+            <div class="form-group">
+                <label for="email">Email // Secure Channel:</label>
+                <input type="email" id="email" name="email" placeholder="Your contact vector" required />
+            </div>
+             <div class="form-group">
+                <label for="subject">Subject // Transmission Type:</label>
+                <input type="text" id="subject" name="subject" placeholder="Purpose of contact" required />
+            </div>
+            <div class="form-group">
+                <label for="message">Message // Payload:</label>
+                <textarea id="message" name="message" placeholder="Your encrypted message (or just plain text)..." required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Transmit</button>
+        </form>
+        <!-- <p style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--neon-purple);">
+           Note: Form submission requires setup (e.g., via Formspree). Replace `YOUR_FORM_ID` in the `action` attribute.
+        </p> --->
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p class="footer-text">© <span id="currentYear"></span> RicheByte // Kanchuka. System Integrity Maintained.</p>
+        <div class="footer-links">
+             <!-- IMPORTANT: Replace '#' with your actual social/professional links -->
+            <a href="https://github.com/RicheByte" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile"><i class="fab fa-github"></i></a>
+            <a href="#" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile"><i class="fab fa-linkedin"></i></a>
+            <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Twitter Profile"><i class="fab fa-twitter"></i></a>
+             <!-- Add other relevant links like a blog, TryHackMe, etc. -->
+             <a href="#" target="_blank" rel="noopener noreferrer" aria-label="TryHackMe Profile"><i class="fas fa-terminal"></i></a>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // --- Mobile Navigation Toggle ---
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            navToggle.classList.toggle('active'); // For hamburger animation
+        });
+
+        // Close mobile nav when a link is clicked
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    navToggle.classList.remove('active');
+                }
+            });
+        });
+
+        // --- Typing Effect ---
+         // Check if Typed.js is loaded before initializing
+        if (typeof Typed !== 'undefined') {
+            const options = {
+                strings: [
+                    "Cybersecurity Analyst",
+                    "Ethical Hacker",
+                    "Python Developer",
+                    "Network Security Enthusiast",
+                    "Digital Defender"
+                    ],
+                typeSpeed: 50,
+                backSpeed: 30,
+                backDelay: 1500,
+                startDelay: 500,
+                loop: true,
+                showCursor: true,
+                cursorChar: '_',
+            };
+            const typed = new Typed('#typed-subtitle', options);
+        } else {
+            // Fallback if Typed.js fails to load
+            const subtitleElement = document.getElementById('typed-subtitle');
+            if(subtitleElement) {
+                 subtitleElement.textContent = "Cybersecurity Enthusiast | Developer | Innovator";
+            }
+            console.error("Typed.js library not loaded.");
+        }
+
+
+        // --- Scroll Animations ---
+        const sections = document.querySelectorAll('section[id]'); // Select sections with IDs
+
+        const observerOptions = {
+            root: null, // relative to document viewport
+            rootMargin: '0px',
+            threshold: 0.1 // trigger when 10% of the section is visible
+        };
+
+        const observerCallback = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Optional: unobserve after animation to save resources
+                    // observer.unobserve(entry.target);
+                }
+                // Optional: remove class if scrolling up, for re-animation
+                // else {
+                //     entry.target.classList.remove('visible');
+                // }
+            });
+        };
+
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+
+        // --- Update Footer Year ---
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // --- Basic Form Validation (Optional - For User Feedback) ---
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(event) {
+                // You can add more complex validation here if needed
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const message = document.getElementById('message').value.trim();
+
+                if (!name || !email || !message) {
+                    // Simple alert, you could display a message near the form instead
+                    alert('Please fill out all required fields.');
+                    event.preventDefault(); // Stop submission if fields are empty
+                }
+                // Basic email format check (not foolproof)
+                 else if (!/^\S+@\S+\.\S+$/.test(email)) {
+                     alert('Please enter a valid email address.');
+                     event.preventDefault();
+                 }
+            });
+        }
+
+    </script>
+</body>
+</html>
