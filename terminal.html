@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="RicheByte - Interactive Cybersecurity Portfolio Terminal.">
+    <title>RicheByte :: SYS_CONSOLE_v3.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00ff41;
+            --secondary-color: #008F11;
+            --accent-color: #003B00;
+            --text-color: #e0e0e0;
+            --error-color: #ff3333;
+            --warning-color: #ffcc00;
+            --link-color: #00d4ff;
+            --bg-color: #0a0a0a;
+            --scanline-color: rgba(0, 0, 0, 0.5);
+            --glow-color: rgba(0, 255, 65, 0.2);
+        }
+
+        * { box-sizing: border-box; }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'JetBrains Mono', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* CRT Effect */
+        .crt-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 100;
+            animation: flicker 0.15s infinite;
+        }
+
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 100;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0, 255, 65, 0.04) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            animation: scanline 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100%; }
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.95; }
+            10% { opacity: 0.9; }
+            15% { opacity: 0.95; }
+            20% { opacity: 0.99; }
+            25% { opacity: 0.95; }
+            30% { opacity: 0.9; }
+            35% { opacity: 0.96; }
+            40% { opacity: 0.98; }
+            45% { opacity: 0.95; }
+            50% { opacity: 0.99; }
+            55% { opacity: 0.93; }
+            60% { opacity: 0.9; }
+            65% { opacity: 0.96; }
+            70% { opacity: 1; }
+            75% { opacity: 0.97; }
+            80% { opacity: 0.95; }
+            85% { opacity: 0.92; }
+            90% { opacity: 0.96; }
+            95% { opacity: 0.99; }
+            100% { opacity: 0.94; }
+        }
+
+        /* Terminal Container */
+        #terminal-container {
+            width: 95%;
+            height: 95%;
+            max-width: 1400px;
+            background: rgba(10, 10, 10, 0.95);
+            border: 1px solid var(--secondary-color);
+            box-shadow: 0 0 20px var(--glow-color);
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #terminal-header {
+            background: var(--accent-color);
+            color: var(--primary-color);
+            padding: 5px 15px;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--secondary-color);
+            user-select: none;
+        }
+
+        #terminal-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--secondary-color) var(--bg-color);
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        #terminal-body::-webkit-scrollbar { width: 8px; }
+        #terminal-body::-webkit-scrollbar-track { background: var(--bg-color); }
+        #terminal-body::-webkit-scrollbar-thumb { background-color: var(--secondary-color); border-radius: 4px; }
+
+        /* Text Styles */
+        .output-line { margin-bottom: 2px; word-wrap: break-word; }
+        .prompt-text { color: var(--primary-color); font-weight: bold; }
+        .path-text { color: var(--link-color); }
+        .command-text { color: var(--text-color); }
+        .error-text { color: var(--error-color); }
+        .info-text { color: var(--link-color); }
+        .success-text { color: var(--primary-color); }
+        .warning-text { color: var(--warning-color); }
+        .dim-text { color: #666; }
+        
+        a { color: var(--link-color); text-decoration: none; border-bottom: 1px dotted var(--link-color); transition: all 0.2s; }
+        a:hover { color: var(--primary-color); border-bottom: 1px solid var(--primary-color); background: rgba(0, 255, 65, 0.1); }
+
+        /* Input Area */
+        .input-line { display: flex; align-items: center; margin-top: 5px; }
+        #cmd-input {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            flex: 1;
+            outline: none;
+            padding-left: 8px;
+        }
+        
+        /* Blinking Cursor (Custom) */
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background: var(--primary-color);
+            animation: blink 1s step-end infinite;
+            margin-left: 2px;
+            vertical-align: middle;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* GUI Toggle Button */
+        .gui-btn {
+            border: 1px solid var(--primary-color);
+            background: transparent;
+            color: var(--primary-color);
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .gui-btn:hover {
+            background: var(--primary-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            #terminal-container { width: 100%; height: 100%; border: none; border-radius: 0; }
+            body { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="crt-overlay"></div>
+    <div class="scanline"></div>
+
+    <div id="terminal-container">
+        <div id="terminal-header">
+            <span>root@richebyte-os:~</span>
+            <button class="gui-btn" onclick="window.location.href='index.html'">[ Switch to GUI ]</button>
+        </div>
+        <div id="terminal-body" onclick="document.getElementById('cmd-input').focus()">
+            <div id="output"></div>
+            <div class="input-line" id="input-line" style="display:none;">
+                <span class="prompt-text">root@richebyte</span>:<span class="path-text">~</span>$
+                <input type="text" id="cmd-input" autocomplete="off" spellcheck="false">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Virtual File System ---
+        const fileSystem = {
+            '/': {
+                type: 'dir',
+                children: {
+                    'home': {
+                        type: 'dir',
+                        children: {
+                            'guest': {
+                                type: 'dir',
+                                children: {
+                                    'projects': {
+                                        type: 'dir',
+                                        children: {
+                                            'scanner.txt': { type: 'file', content: 'Project: Stealth Network Scanner\nStatus: Completed\nStack: Python, Scapy\n\nA multi-threaded network scanner capable of TCP SYN, UDP, and stealth scans.' },
+                                            'encryptor.txt': { type: 'file', content: 'Project: Secure File Encryptor\nStatus: Completed\nStack: Python, Cryptography\n\nAES-256-GCM file encryption tool with secure key derivation.' },
+                                            'dashboard.md': { type: 'file', content: 'Project: Vulnerability Dashboard\nStatus: Concept\nStack: Flask, React\n\nUnified view for security scan results.' }
+                                        }
+                                    },
+                                    'about.txt': { type: 'file', content: 'Name: Kanchuka (RicheByte)\nRole: Cybersecurity Enthusiast & Developer\n\nI build secure systems and break insecure ones. Passionate about network security, ethical hacking, and clean code.' },
+                                    'skills.md': { type: 'file', content: '# Skills Matrix\n\n* Languages: Python, JavaScript, Bash, C++\n* Security: Pentesting, Network Analysis, SIEM, Cryptography\n* Tools: Wireshark, Metasploit, Nmap, Docker, Git' },
+                                    'contact.info': { type: 'file', content: 'Email: contact@richebyte.dev\nGitHub: github.com/RicheByte\nLinkedIn: linkedin.com/in/kanchuka' }
+                                }
+                            }
+                        }
+                    },
+                    'bin': {
+                        type: 'dir',
+                        children: {
+                            'help': { type: 'exec', desc: 'List available commands' },
+                            'ls': { type: 'exec', desc: 'List directory contents' },
+                            'cd': { type: 'exec', desc: 'Change directory' },
+                            'cat': { type: 'exec', desc: 'Concatenate and display file content' },
+                            'clear': { type: 'exec', desc: 'Clear terminal screen' },
+                            'whoami': { type: 'exec', desc: 'Print current user' },
+                            'date': { type: 'exec', desc: 'Print system date and time' },
+                            'gui': { type: 'exec', desc: 'Launch Graphical User Interface' },
+                            'reboot': { type: 'exec', desc: 'Reboot the system' }
+                        }
+                    },
+                    'var': {
+                        type: 'dir',
+                        children: {
+                            'log': {
+                                type: 'dir',
+                                children: {
+                                    'syslog': { type: 'file', content: '[SYSTEM] Boot sequence initiated...\n[SYSTEM] Kernel loaded.\n[SECURITY] Intrusion detection system active.' }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        // --- State Management ---
+        let currentPath = ['home', 'guest'];
+        let commandHistory = [];
+        let historyIndex = -1;
+        let isBooting = true;
+
+        // --- DOM Elements ---
+        const outputDiv = document.getElementById('output');
+        const inputLine = document.getElementById('input-line');
+        const cmdInput = document.getElementById('cmd-input');
+        const terminalBody = document.getElementById('terminal-body');
+        const pathDisplay = document.querySelector('.path-text');
+
+        // --- Helper Functions ---
+        function resolvePath(pathStr) {
+            if (pathStr === '/') return [];
+            if (pathStr === '~') return ['home', 'guest'];
+            
+            let parts = pathStr.split('/').filter(p => p);
+            let tempPath = pathStr.startsWith('/') ? [] : [...currentPath];
+
+            for (let part of parts) {
+                if (part === '.') continue;
+                if (part === '..') {
+                    if (tempPath.length > 0) tempPath.pop();
+                } else {
+                    tempPath.push(part);
+                }
+            }
+            return tempPath;
+        }
+
+        function getDirFromPath(pathArray) {
+            let current = fileSystem['/'];
+            for (let part of pathArray) {
+                if (current.children && current.children[part]) {
+                    current = current.children[part];
+                } else {
+                    return null;
+                }
+            }
+            return current;
+        }
+
+        function formatPath(pathArray) {
+            if (pathArray.length === 0) return '/';
+            let path = '/' + pathArray.join('/');
+            if (path.startsWith('/home/guest')) {
+                return path.replace('/home/guest', '~');
+            }
+            return path;
+        }
+
+        function print(text, className = 'output-line') {
+            const div = document.createElement('div');
+            div.className = className;
+            div.innerHTML = text; // Allow HTML
+            outputDiv.appendChild(div);
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+        }
+
+        function updatePrompt() {
+            pathDisplay.textContent = formatPath(currentPath);
+        }
+
+        // --- Commands ---
+        const commands = {
+            help: () => {
+                print('Available commands:', 'info-text');
+                const bin = getDirFromPath(['bin']);
+                let cmdList = Object.keys(bin.children).join(', ');
+                print(cmdList);
+                print('<br>Tip: Use <span class="success-text">TAB</span> for auto-completion.');
+            },
+            ls: (args) => {
+                let targetPath = args[0] ? resolvePath(args[0]) : currentPath;
+                let dir = getDirFromPath(targetPath);
+                
+                if (!dir || dir.type !== 'dir') {
+                    print(`ls: cannot access '${args[0] || ''}': No such file or directory`, 'error-text');
+                    return;
+                }
+
+                let content = Object.entries(dir.children).map(([name, node]) => {
+                    let colorClass = node.type === 'dir' ? 'link-color' : 'text-color';
+                    let suffix = node.type === 'dir' ? '/' : '';
+                    return `<span style="color: var(--${node.type === 'dir' ? 'link-color' : 'text-color'}); margin-right: 15px;">${name}${suffix}</span>`;
+                }).join('');
+                print(content || '(empty)');
+            },
+            cd: (args) => {
+                if (!args[0]) {
+                    currentPath = ['home', 'guest'];
+                    updatePrompt();
+                    return;
+                }
+                let targetPath = resolvePath(args[0]);
+                let dir = getDirFromPath(targetPath);
+                if (dir && dir.type === 'dir') {
+                    currentPath = targetPath;
+                    updatePrompt();
+                } else {
+                    print(`cd: ${args[0]}: No such file or directory`, 'error-text');
+                }
+            },
+            cat: (args) => {
+                if (!args[0]) {
+                    print('usage: cat &lt;filename&gt;', 'warning-text');
+                    return;
+                }
+                let targetPath = resolvePath(args[0]);
+                let file = getDirFromPath(targetPath);
+                if (file && file.type === 'file') {
+                    print(file.content.replace(/\n/g, '<br>'));
+                } else if (file && file.type === 'dir') {
+                    print(`cat: ${args[0]}: Is a directory`, 'error-text');
+                } else {
+                    print(`cat: ${args[0]}: No such file or directory`, 'error-text');
+                }
+            },
+            clear: () => {
+                outputDiv.innerHTML = '';
+            },
+            whoami: () => {
+                print('root (simulated guest user)');
+            },
+            date: () => {
+                print(new Date().toString());
+            },
+            gui: () => {
+                print('Initializing Graphical User Interface...', 'success-text');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            },
+            reboot: () => {
+                location.reload();
+            },
+            history: () => {
+                commandHistory.forEach((cmd, i) => {
+                    print(`${i + 1}  ${cmd}`);
+                });
+            }
+        };
+
+        // --- Input Handling ---
+        cmdInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const input = cmdInput.value.trim();
+                if (input) {
+                    commandHistory.push(input);
+                    historyIndex = commandHistory.length;
+                    
+                    // Echo command
+                    print(`<span class="prompt-text">root@richebyte</span>:<span class="path-text">${formatPath(currentPath)}</span>$ ${input}`);
+                    
+                    const [cmd, ...args] = input.split(/\s+/);
+                    if (commands[cmd]) {
+                        commands[cmd](args);
+                    } else {
+                        print(`Command not found: ${cmd}. Type 'help' for available commands.`, 'error-text');
+                    }
+                } else {
+                     print(`<span class="prompt-text">root@richebyte</span>:<span class="path-text">${formatPath(currentPath)}</span>$ `);
+                }
+                cmdInput.value = '';
+                terminalBody.scrollTop = terminalBody.scrollHeight;
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    cmdInput.value = commandHistory[historyIndex];
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    cmdInput.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = commandHistory.length;
+                    cmdInput.value = '';
+                }
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                const input = cmdInput.value;
+                const parts = input.split(/\s+/);
+                const currentInput = parts[parts.length - 1];
+                
+                if (currentInput) {
+                    const dir = getDirFromPath(currentPath);
+                    const matches = Object.keys(dir.children).filter(k => k.startsWith(currentInput));
+                    if (matches.length === 1) {
+                        parts[parts.length - 1] = matches[0];
+                        cmdInput.value = parts.join(' ');
+                        if (dir.children[matches[0]].type === 'dir') {
+                             cmdInput.value += '/';
+                        }
+                    } else if (matches.length > 1) {
+                         print(`<span class="prompt-text">root@richebyte</span>:<span class="path-text">${formatPath(currentPath)}</span>$ ${input}`);
+                         print(matches.join('  '));
+                    }
+                }
+            }
+        });
+
+        // --- Boot Sequence ---
+        const bootLog = [
+            { text: 'Initializing RicheByte OS v3.0.1...', delay: 500 },
+            { text: 'Loading kernel modules... [OK]', delay: 300 },
+            { text: 'Mounting virtual filesystems... [OK]', delay: 200 },
+            { text: 'Starting network interface eth0... [OK]', delay: 400 },
+            { text: 'Checking security protocols... [SECURE]', delay: 600 },
+            { text: 'Loading user profile... [GUEST]', delay: 300 },
+            { text: 'System ready.', delay: 200, class: 'success-text' },
+            { text: 'Welcome to the interactive terminal portfolio.', delay: 100 },
+            { text: "Type 'help' to view available commands.", delay: 100, class: 'info-text' }
+        ];
+
+        async function runBoot() {
+            for (let log of bootLog) {
+                await new Promise(r => setTimeout(r, log.delay));
+                print(log.text, log.class || 'output-line');
+            }
+            isBooting = false;
+            inputLine.style.display = 'flex';
+            cmdInput.focus();
+            updatePrompt();
+        }
+
+        window.onload = runBoot;
+        
+        // Keep focus
+        document.addEventListener('click', () => {
+            if (!isBooting) cmdInput.focus();
+        });
+
+    </script>
+</body>
+</html>

@@ -56,8 +56,8 @@
             width: 100%;
             height: 100%;
             background:
-                linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px), /* Reduced opacity */
-                linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
+                linear-gradient(rgba(0, 255, 0, 0.03) 1px, transparent 1px), /* Reduced opacity */
+                linear-gradient(90deg, rgba(0, 255, 0, 0.03) 1px, transparent 1px);
             background-size: 25px 25px; /* Slightly larger grid */
             pointer-events: none;
             z-index: -1;
@@ -128,6 +128,26 @@
 
         .nav-link:hover::after {
             width: 100%;
+        }
+
+        .terminal-btn {
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 5px 10px !important;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            background: rgba(0, 255, 0, 0.05);
+        }
+
+        .terminal-btn:hover {
+            background: var(--primary-color);
+            color: #000 !important;
+            box-shadow: 0 0 15px var(--primary-color);
+            text-shadow: none;
+        }
+        
+        .terminal-btn::after {
+            display: none; /* No underline for button */
         }
 
         /* Mobile Nav Toggle */
@@ -658,8 +678,8 @@
             <li><a href="https://hacker.super.site/" class="nav-link">Blog</a></li>
             <li><a href="#contact" class="nav-link">Contact</a></li>
             <li><a href="graphic.html" class="nav-link">Design</a></li>
-            <!-- Add link to the new tools page -->
             <li><a href="software.html" class="nav-link">Tools</a></li>
+            <li><a href="terminal.html" class="nav-link terminal-btn">[ TERMINAL ]</a></li>
         </ul>
         <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
             <span></span>
