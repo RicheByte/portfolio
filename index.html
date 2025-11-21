@@ -481,12 +481,7 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* Threat Map */
-        #threat-map-canvas {
-            width: 100%;
-            height: 100%;
-            background: #050505;
-        }
+
 
         /* --- Mobile Responsiveness --- */
         @media (max-width: 768px) {
@@ -544,6 +539,80 @@
             #root-shell {
                 width: 90%;
             }
+        }
+
+        /* Loading Spinner */
+        .loading-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(32, 194, 14, 0.3);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Mobile Mode Styles */
+        #mobile-mode {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0a0a0a;
+            z-index: 20000;
+            padding: 20px;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+        .mobile-header {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+        .mobile-header h1 {
+            font-size: 2rem;
+            color: white;
+            margin: 0;
+        }
+        .mobile-header p {
+            color: var(--accent-color);
+            margin: 5px 0;
+        }
+        .mobile-app-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .mobile-app-btn {
+            background: #1e1e1e;
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .mobile-app-btn:active { background: #333; }
+        .mobile-app-btn i { font-size: 1.5rem; color: var(--accent-color); width: 30px; text-align: center; }
+
+        /* --- Mobile Responsiveness Overrides --- */
+        @media (max-width: 768px) {
+            /* Hide Desktop Elements when in Mobile Mode (handled by JS usually, but good to have CSS fallback if needed) */
         }
 
     </style>
@@ -659,9 +728,7 @@
             <div class="dock-item" onclick="openWindow('skills')" data-title="Skills">
                 <i class="fas fa-brain" style="color: #ff8a65;"></i>
             </div>
-            <div class="dock-item" onclick="openWindow('threatmap')" data-title="Threat Map">
-                <i class="fas fa-globe-americas" style="color: #f44336;"></i>
-            </div>
+
             <div class="dock-item" onclick="openWindow('browser')" data-title="Tor Browser">
                 <i class="fas fa-globe" style="color: #b388ff;"></i>
             </div>
@@ -691,7 +758,7 @@
             <ul style="list-style-type: square;">
                 <li>Explore the <strong>Projects</strong> directory to analyze our tools.</li>
                 <li>Use the <strong>Tor Browser</strong> to access the external portfolio.</li>
-                <li>Monitor global activity via the <strong>Threat Map</strong>.</li>
+
                 <li>Locate the hidden flags embedded in the system.</li>
             </ul>
             <p><em>Hint: The terminal holds many secrets. Try 'help'.</em></p>
@@ -859,20 +926,7 @@
         </div>
     </div>
 
-    <!-- Threat Map Window -->
-    <div id="win-threatmap" class="window" style="top: 10%; left: 10%; width: 800px; height: 500px;">
-        <div class="title-bar">
-            <div class="window-controls">
-                <button class="control-btn close-btn" onclick="closeWindow('threatmap')"></button>
-                <button class="control-btn min-btn" onclick="minimizeWindow('threatmap')"></button>
-                <button class="control-btn max-btn"></button>
-            </div>
-            <span class="window-title">Global Threat Map (Live)</span>
-        </div>
-        <div class="window-content" style="padding: 0; overflow: hidden;">
-            <canvas id="threat-map-canvas"></canvas>
-        </div>
-    </div>
+
 
     <!-- Browser Window (Iframe) -->
     <div id="win-browser" class="window" style="top: 10%; left: 15%; width: 900px; height: 600px;">
@@ -927,7 +981,118 @@
         <button onclick="document.getElementById('root-shell').style.display='none'" style="background: var(--accent-color); border: none; padding: 5px 10px; cursor: pointer; font-weight: bold;">CLOSE</button>
     </div>
 
+    <!-- Mobile Mode Overlay -->
+    <div id="mobile-mode">
+        <div class="mobile-header">
+            <h1>RicheByte OS</h1>
+            <p>Mobile Interface</p>
+        </div>
+        <div class="mobile-app-list">
+            <div class="mobile-app-btn" onclick="openWindow('about'); hideMobileMode();">
+                <i class="fas fa-user-astronaut"></i> About Me
+            </div>
+            <div class="mobile-app-btn" onclick="openWindow('projects'); hideMobileMode();">
+                <i class="fas fa-folder-open"></i> Projects
+            </div>
+            <div class="mobile-app-btn" onclick="openWindow('cv'); hideMobileMode();">
+                <i class="fas fa-file-pdf"></i> Resume
+            </div>
+            <div class="mobile-app-btn" onclick="window.location.href='mailto:contact@richebyte.com'">
+                <i class="fas fa-envelope"></i> Contact
+            </div>
+            <div class="mobile-app-btn" onclick="window.open('https://github.com/RicheByte', '_blank')">
+                <i class="fab fa-github"></i> GitHub
+            </div>
+            <div class="mobile-app-btn" onclick="hideMobileMode()">
+                <i class="fas fa-desktop"></i> Switch to Desktop
+            </div>
+        </div>
+    </div>
+
     <script>
+        // --- Sound Manager ---
+        class SoundManager {
+            constructor() {
+                this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                this.enabled = true;
+            }
+
+            playTone(freq, type, duration) {
+                if (!this.enabled) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + duration);
+            }
+
+            playBoot() {
+                if (!this.enabled) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.frequency.setValueAtTime(100, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.5);
+                gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 1.5);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 1.5);
+            }
+
+            playClick() {
+                this.playTone(800, 'sine', 0.1);
+            }
+
+            playType() {
+                this.playTone(400, 'square', 0.05);
+            }
+        }
+
+        const soundManager = new SoundManager();
+
+        // --- Mobile Mode Logic ---
+        const mobileMode = document.getElementById('mobile-mode');
+        const desktopElements = [
+            document.getElementById('desktop-icons'),
+            document.getElementById('dock-container'),
+            document.getElementById('widget-container'),
+            document.getElementById('top-bar')
+        ];
+
+        function checkMobile() {
+            if (window.innerWidth < 768) {
+                showMobileMode();
+            } else {
+                hideMobileMode();
+            }
+        }
+
+        function showMobileMode() {
+            mobileMode.style.display = 'flex';
+            desktopElements.forEach(el => el.style.display = 'none');
+            // Close any open windows to clean up
+            document.querySelectorAll('.window.open').forEach(win => {
+                win.classList.remove('open');
+            });
+        }
+
+        function hideMobileMode() {
+            mobileMode.style.display = 'none';
+            desktopElements.forEach(el => el.style.display = ''); // Reset to default
+        }
+
+        // Initial Check
+        window.addEventListener('load', checkMobile);
+        // Optional: Listen to resize, but might be annoying if resizing window on desktop
+        // window.addEventListener('resize', checkMobile); 
+
+
         // --- Boot Sequence ---
         const bootScreen = document.getElementById('boot-screen');
         const bootText = document.getElementById('boot-text');
@@ -958,9 +1123,12 @@
             
             await new Promise(r => setTimeout(r, 1000));
             bootScreen.style.opacity = '0';
+            soundManager.playBoot(); // Play Boot Sound
             setTimeout(() => {
                 bootScreen.style.display = 'none';
-                openWindow('mission'); // Open mission briefing after boot
+                if (window.innerWidth >= 768) {
+                    openWindow('mission'); // Open mission briefing after boot only on desktop
+                }
             }, 1000);
             
             sessionStorage.setItem('booted', 'true');
@@ -972,6 +1140,24 @@
         // --- Window Management ---
         let zIndex = 100;
         const activeAppName = document.getElementById('active-app-name');
+
+        // Global Iframe Loader Tracking
+        function initIframeTrackers() {
+            document.querySelectorAll('iframe').forEach(iframe => {
+                // If it has a src and no loaded flag, listen
+                iframe.addEventListener('load', () => {
+                    iframe.dataset.loaded = 'true';
+                    // Hide spinner if visible
+                    const win = iframe.closest('.window');
+                    if (win) {
+                        const spinner = win.querySelector('.loading-overlay');
+                        if (spinner) spinner.style.display = 'none';
+                    }
+                });
+            });
+        }
+        // Run immediately
+        initIframeTrackers();
 
         function openWindow(id) {
             const win = document.getElementById('win-' + id);
@@ -992,9 +1178,39 @@
 
             win.classList.add('open');
             focusWindow(id);
+            soundManager.playClick(); // Play Click Sound
+
+            // Handle Loading Spinner for Iframes
+            const iframe = win.querySelector('iframe');
+            if (iframe) {
+                let spinner = win.querySelector('.loading-overlay');
+                
+                // Create spinner if not exists
+                if (!spinner) {
+                    spinner = document.createElement('div');
+                    spinner.className = 'loading-overlay';
+                    spinner.innerHTML = '<div class="spinner"></div>';
+                    win.querySelector('.window-content').appendChild(spinner);
+                    spinner.style.position = 'absolute'; 
+                }
+
+                // Check if already loaded
+                if (iframe.dataset.loaded === 'true') {
+                    spinner.style.display = 'none';
+                } else {
+                    spinner.style.display = 'flex';
+                    // Safety timeout (3s) - Force hide if it gets stuck
+                    setTimeout(() => {
+                        if (spinner.style.display !== 'none') {
+                            spinner.style.display = 'none';
+                            // Assume loaded if timeout hits
+                            iframe.dataset.loaded = 'true'; 
+                        }
+                    }, 3000);
+                }
+            }
             
             // Init app specific logic
-            if (id === 'threatmap') startThreatMap();
         }
 
         function closeWindow(id) {
@@ -1008,7 +1224,6 @@
             activeAppName.innerText = 'Desktop';
             
             // Stop app specific logic
-            if (id === 'threatmap') stopThreatMap();
         }
 
         function minimizeWindow(id) {
@@ -1153,132 +1368,7 @@
             }
         }
 
-        // --- Threat Map Logic ---
-        const tmCanvas = document.getElementById('threat-map-canvas');
-        const tmCtx = tmCanvas.getContext('2d');
-        let tmInterval;
-        let attacks = [];
-        let mapPoints = [];
 
-        function resizeThreatMap() {
-            tmCanvas.width = tmCanvas.parentElement.clientWidth;
-            tmCanvas.height = tmCanvas.parentElement.clientHeight;
-            initMapPoints();
-        }
-
-        function initMapPoints() {
-            mapPoints = [];
-            const cols = 60; // Increased resolution
-            const rows = 30;
-            const xStep = tmCanvas.width / cols;
-            const yStep = tmCanvas.height / rows;
-
-            for(let i=0; i<cols; i++) {
-                for(let j=0; j<rows; j++) {
-                    // Simulate a world map shape (very roughly)
-                    // Denser points for better visibility
-                    if (Math.random() > 0.5 || (i > 15 && i < 45 && j > 8 && j < 22)) {
-                        mapPoints.push({
-                            x: i * xStep + xStep/2,
-                            y: j * yStep + yStep/2
-                        });
-                    }
-                }
-            }
-        }
-
-        function startThreatMap() {
-            resizeThreatMap();
-            window.addEventListener('resize', resizeThreatMap);
-            if (tmInterval) clearInterval(tmInterval);
-            tmInterval = setInterval(drawThreatMap, 30);
-        }
-
-        function stopThreatMap() {
-            if (tmInterval) clearInterval(tmInterval);
-            window.removeEventListener('resize', resizeThreatMap);
-        }
-
-        function drawThreatMap() {
-            // Clear with slight fade for trails
-            tmCtx.fillStyle = 'rgba(10, 10, 10, 0.2)';
-            tmCtx.fillRect(0, 0, tmCanvas.width, tmCanvas.height);
-
-            // Draw Map Points (Static)
-            // Brighter color and larger size for visibility
-            tmCtx.fillStyle = 'rgba(80, 200, 120, 0.3)'; 
-            for (const p of mapPoints) {
-                tmCtx.beginPath();
-                tmCtx.arc(p.x, p.y, 2, 0, Math.PI * 2); // Increased size
-                tmCtx.fill();
-            }
-
-            // Add new random attack
-            if (Math.random() > 0.92) {
-                const start = mapPoints[Math.floor(Math.random() * mapPoints.length)];
-                const end = mapPoints[Math.floor(Math.random() * mapPoints.length)];
-                if (start && end) {
-                    attacks.push({
-                        x: start.x, y: start.y,
-                        tx: end.x, ty: end.y,
-                        progress: 0,
-                        color: Math.random() > 0.3 ? '#00ff00' : '#ff0000', // Mostly green (defense)
-                        speed: 0.01 + Math.random() * 0.02
-                    });
-                }
-            }
-
-            // Draw attacks
-            for (let i = 0; i < attacks.length; i++) {
-                const a = attacks[i];
-                a.progress += a.speed;
-
-                // Parabolic arc calculation
-                const dx = a.tx - a.x;
-                const dy = a.ty - a.y;
-                const currentX = a.x + dx * a.progress;
-                const currentY = a.y + dy * a.progress - (Math.sin(a.progress * Math.PI) * 50); // Arc height
-
-                // Draw missile head
-                tmCtx.fillStyle = '#fff';
-                tmCtx.beginPath();
-                tmCtx.arc(currentX, currentY, 2, 0, Math.PI * 2);
-                tmCtx.fill();
-
-                // Draw trail (simplified)
-                tmCtx.strokeStyle = a.color;
-                tmCtx.lineWidth = 1;
-                tmCtx.beginPath();
-                tmCtx.moveTo(a.x, a.y); // Ideally track previous pos, but this works for simple visuals
-                tmCtx.lineTo(currentX, currentY);
-                tmCtx.stroke();
-
-                // Impact
-                if (a.progress >= 1) {
-                    // Explosion
-                    tmCtx.fillStyle = '#fff';
-                    tmCtx.beginPath();
-                    tmCtx.arc(a.tx, a.ty, 6, 0, Math.PI * 2);
-                    tmCtx.fill();
-                    
-                    // Ripple
-                    tmCtx.strokeStyle = a.color;
-                    tmCtx.beginPath();
-                    tmCtx.arc(a.tx, a.ty, 12, 0, Math.PI * 2);
-                    tmCtx.stroke();
-
-                    attacks.splice(i, 1);
-                    i--;
-                }
-            }
-            
-            // Stats overlay
-            tmCtx.fillStyle = '#0f0';
-            tmCtx.font = '12px "JetBrains Mono", monospace';
-            tmCtx.fillText('LIVE THREAT FEED: ' + attacks.length + ' ACTIVE EVENTS', 20, 30);
-            tmCtx.fillStyle = '#aaa';
-            tmCtx.fillText('SOURCE: GLOBAL SENSORS', 20, 45);
-        }
 
 
         // --- Easter Eggs ---

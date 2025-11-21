@@ -361,6 +361,18 @@
         const modalTitle = document.getElementById('modal-title');
         const modalBody = document.getElementById('modal-body');
 
+        // Image Error Handler
+        function handleImageError(img, repo) {
+            if (img.dataset.triedMaster) {
+                img.style.display = 'none';
+                const icon = img.parentElement.querySelector('i');
+                if (icon) icon.style.display = 'block';
+            } else {
+                img.dataset.triedMaster = 'true';
+                img.src = `https://raw.githubusercontent.com/RicheByte/${repo}/master/preview.png`;
+            }
+        }
+
         // Render Grid
         projects.forEach(p => {
             const card = document.createElement('div');
@@ -368,9 +380,15 @@
             
             const tagsHtml = p.tools.map(t => `<span class="tool-tag">${t}</span>`).join('');
 
+            // Try main branch first for preview.png
+            const imgUrl = `https://raw.githubusercontent.com/RicheByte/${p.repo}/main/preview.png`;
+
             card.innerHTML = `
                 <div class="card-img">
-                    <i class="fas fa-terminal"></i>
+                    <i class="fas fa-terminal" style="display: none;"></i>
+                    <img src="${imgUrl}" 
+                         alt="${p.title}" 
+                         onerror="handleImageError(this, '${p.repo}')">
                 </div>
                 <div class="card-content">
                     <div class="card-title">
