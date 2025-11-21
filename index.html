@@ -561,59 +561,7 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Mobile Mode Styles */
-        #mobile-mode {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #0a0a0a;
-            z-index: 20000;
-            padding: 20px;
-            flex-direction: column;
-            align-items: center;
-            overflow-y: auto;
-        }
-        .mobile-header {
-            text-align: center;
-            margin-bottom: 30px;
-            margin-top: 20px;
-        }
-        .mobile-header h1 {
-            font-size: 2rem;
-            color: white;
-            margin: 0;
-        }
-        .mobile-header p {
-            color: var(--accent-color);
-            margin: 5px 0;
-        }
-        .mobile-app-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            max-width: 400px;
-        }
-        .mobile-app-btn {
-            background: #1e1e1e;
-            border: 1px solid #333;
-            padding: 20px;
-            border-radius: 12px;
-            color: white;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .mobile-app-btn:active { background: #333; }
-        .mobile-app-btn i { font-size: 1.5rem; color: var(--accent-color); width: 30px; text-align: center; }
 
-        /* --- Mobile Responsiveness Overrides --- */
-        @media (max-width: 768px) {
-            /* Hide Desktop Elements when in Mobile Mode (handled by JS usually, but good to have CSS fallback if needed) */
-        }
 
     </style>
 </head>
@@ -981,33 +929,7 @@
         <button onclick="document.getElementById('root-shell').style.display='none'" style="background: var(--accent-color); border: none; padding: 5px 10px; cursor: pointer; font-weight: bold;">CLOSE</button>
     </div>
 
-    <!-- Mobile Mode Overlay -->
-    <div id="mobile-mode">
-        <div class="mobile-header">
-            <h1>RicheByte OS</h1>
-            <p>Mobile Interface</p>
-        </div>
-        <div class="mobile-app-list">
-            <div class="mobile-app-btn" onclick="openWindow('about'); hideMobileMode();">
-                <i class="fas fa-user-astronaut"></i> About Me
-            </div>
-            <div class="mobile-app-btn" onclick="openWindow('projects'); hideMobileMode();">
-                <i class="fas fa-folder-open"></i> Projects
-            </div>
-            <div class="mobile-app-btn" onclick="openWindow('cv'); hideMobileMode();">
-                <i class="fas fa-file-pdf"></i> Resume
-            </div>
-            <div class="mobile-app-btn" onclick="window.location.href='mailto:contact@richebyte.com'">
-                <i class="fas fa-envelope"></i> Contact
-            </div>
-            <div class="mobile-app-btn" onclick="window.open('https://github.com/RicheByte', '_blank')">
-                <i class="fab fa-github"></i> GitHub
-            </div>
-            <div class="mobile-app-btn" onclick="hideMobileMode()">
-                <i class="fas fa-desktop"></i> Switch to Desktop
-            </div>
-        </div>
-    </div>
+
 
     <script>
         // --- Sound Manager ---
@@ -1056,41 +978,7 @@
 
         const soundManager = new SoundManager();
 
-        // --- Mobile Mode Logic ---
-        const mobileMode = document.getElementById('mobile-mode');
-        const desktopElements = [
-            document.getElementById('desktop-icons'),
-            document.getElementById('dock-container'),
-            document.getElementById('widget-container'),
-            document.getElementById('top-bar')
-        ];
-
-        function checkMobile() {
-            if (window.innerWidth < 768) {
-                showMobileMode();
-            } else {
-                hideMobileMode();
-            }
-        }
-
-        function showMobileMode() {
-            mobileMode.style.display = 'flex';
-            desktopElements.forEach(el => el.style.display = 'none');
-            // Close any open windows to clean up
-            document.querySelectorAll('.window.open').forEach(win => {
-                win.classList.remove('open');
-            });
-        }
-
-        function hideMobileMode() {
-            mobileMode.style.display = 'none';
-            desktopElements.forEach(el => el.style.display = ''); // Reset to default
-        }
-
-        // Initial Check
-        window.addEventListener('load', checkMobile);
-        // Optional: Listen to resize, but might be annoying if resizing window on desktop
-        // window.addEventListener('resize', checkMobile); 
+ 
 
 
         // --- Boot Sequence ---
@@ -1126,9 +1014,7 @@
             soundManager.playBoot(); // Play Boot Sound
             setTimeout(() => {
                 bootScreen.style.display = 'none';
-                if (window.innerWidth >= 768) {
-                    openWindow('mission'); // Open mission briefing after boot only on desktop
-                }
+                openWindow('mission'); // Open mission briefing after boot
             }, 1000);
             
             sessionStorage.setItem('booted', 'true');
