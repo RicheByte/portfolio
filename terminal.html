@@ -253,6 +253,7 @@
                             'whoami': { type: 'exec', desc: 'Print current user' },
                             'date': { type: 'exec', desc: 'Print system date and time' },
                             'gui': { type: 'exec', desc: 'Launch Graphical User Interface' },
+                            'open': { type: 'exec', desc: 'Open a GUI window (usage: open <app_name>)' },
                             'reboot': { type: 'exec', desc: 'Reboot the system' }
                         }
                     },
@@ -408,6 +409,19 @@
             },
             reboot: () => {
                 location.reload();
+            },
+            open: (args) => {
+                if (!args[0]) {
+                    print('usage: open &lt;app_name&gt; (e.g., projects, about, skills)', 'warning-text');
+                    return;
+                }
+                const appName = args[0].toLowerCase();
+                if (window.parent && typeof window.parent.openWindow === 'function') {
+                    print(`Opening ${appName}...`, 'success-text');
+                    window.parent.openWindow(appName);
+                } else {
+                    print('Error: GUI interface not found. Are you running in standalone mode?', 'error-text');
+                }
             },
             history: () => {
                 commandHistory.forEach((cmd, i) => {
