@@ -585,21 +585,9 @@
             <i class="fas fa-trash-alt"></i>
             <span>Trash</span>
         </div>
-        <div class="desktop-icon-item" onclick="openWindow('cv')">
-            <i class="fas fa-file-pdf" style="color: #e53935;"></i>
-            <span>Resume.pdf</span>
-        </div>
         <div class="desktop-icon-item" onclick="openWindow('projects')">
             <i class="fas fa-folder-open" style="color: #ffd54f;"></i>
             <span>Projects</span>
-        </div>
-        <div class="desktop-icon-item" onclick="window.open('https://github.com/RicheByte', '_blank')">
-            <i class="fab fa-github" style="color: #ffffff;"></i>
-            <span>GitHub</span>
-        </div>
-        <div class="desktop-icon-item" onclick="window.open('https://www.linkedin.com/in/richebyte', '_blank')">
-            <i class="fab fa-linkedin" style="color: #0077b5;"></i>
-            <span>LinkedIn</span>
         </div>
         <div class="desktop-icon-item" onclick="window.open('https://tryhackme.com/p/richebyte', '_blank')">
             <i class="fas fa-user-secret" style="color: #ff3333;"></i>
@@ -633,6 +621,30 @@
                 <div class="sysmon-bar-bg"><div class="sysmon-bar-fill" id="net-bar" style="width: 20%; background: var(--accent-blue);"></div></div>
             </div>
         </div>
+
+        <!-- Connect Widget (CTAs) -->
+        <div class="widget-sysmon" style="margin-top: 20px; text-align: center;">
+            <div style="border-bottom: 1px solid #444; margin-bottom: 15px; padding-bottom: 5px; font-weight: bold; color: var(--accent-blue);">
+                <i class="fas fa-link"></i> CONNECT
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button onclick="openWindow('cv')" style="background: #e53935; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <i class="fas fa-file-pdf"></i> See Full Resume
+                </button>
+                <button onclick="window.open('https://github.com/RicheByte', '_blank')" style="background: #333; color: white; border: 1px solid #555; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <i class="fab fa-github"></i> Open GitHub
+                </button>
+                <button onclick="window.open('https://www.linkedin.com/in/richebyte', '_blank')" style="background: #0077b5; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <i class="fab fa-linkedin"></i> Open LinkedIn
+                </button>
+                <button onclick="window.location.href='mailto:contact@richebyte.com'" style="background: var(--accent-color); color: black; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <i class="fas fa-envelope"></i> Contact Me
+                </button>
+                <button onclick="window.open('https://hacker.super.site/', '_blank')" style="background: #8e44ad; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <i class="fas fa-blog"></i> Open Blog
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Dock -->
@@ -647,20 +659,11 @@
             <div class="dock-item" onclick="openWindow('skills')" data-title="Skills">
                 <i class="fas fa-brain" style="color: #ff8a65;"></i>
             </div>
-            <div class="dock-item" onclick="openWindow('notepad')" data-title="Notepad">
-                <i class="fas fa-sticky-note" style="color: #fff59d;"></i>
-            </div>
-            <div class="dock-item" onclick="openWindow('calc')" data-title="Calculator">
-                <i class="fas fa-calculator" style="color: #ffcc80;"></i>
-            </div>
             <div class="dock-item" onclick="openWindow('threatmap')" data-title="Threat Map">
                 <i class="fas fa-globe-americas" style="color: #f44336;"></i>
             </div>
             <div class="dock-item" onclick="openWindow('browser')" data-title="Tor Browser">
                 <i class="fas fa-globe" style="color: #b388ff;"></i>
-            </div>
-            <div class="dock-item" onclick="openWindow('software')" data-title="Software Center">
-                <i class="fas fa-box-open" style="color: #a5d6a7;"></i>
             </div>
             <div class="dock-item" onclick="openWindow('terminal')" data-title="Terminal">
                 <i class="fas fa-terminal" style="color: #e0e0e0;"></i>
@@ -712,7 +715,7 @@
     </div>
 
     <!-- About Window -->
-    <div id="win-about" class="window" style="top: 15%; left: 15%; width: 500px; height: 400px;">
+    <div id="win-about" class="window" style="top: 15%; left: 15%; width: 600px; height: 500px;">
         <div class="title-bar">
             <div class="window-controls">
                 <button class="control-btn close-btn" onclick="closeWindow('about')"></button>
@@ -722,13 +725,44 @@
             <span class="window-title">About Me</span>
         </div>
         <div class="window-content">
-            <div style="text-align: center; margin-bottom: 20px;">
+            <div style="display: flex; gap: 20px; margin-bottom: 20px; align-items: center;">
                 <img src="me.png" alt="Profile" style="width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--accent-color);">
-                <h3>Kanchuka (RicheByte)</h3>
-                <p style="color: var(--accent-blue);">Cybersecurity Enthusiast & Developer</p>
+                <div>
+                    <h2 style="margin: 0; color: white;">Kanchuka (RicheByte)</h2>
+                    <p style="color: var(--accent-blue); margin: 5px 0;">Cybersecurity Specialist & Full-Stack Developer</p>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <span class="tech-tag">Red Team</span>
+                        <span class="tech-tag">Blue Team</span>
+                        <span class="tech-tag">DevSecOps</span>
+                    </div>
+                </div>
             </div>
-            <p>Hello! I'm Kanchuka. I focus on cybersecurity and creative development because I'm genuinely curious about how digital systems work and how to make them secure.</p>
-            <p>My work involves studying network protocols, concentrating on writing secure code, and understanding both offensive and defensive security techniques.</p>
+
+            <h3 style="color: var(--accent-color); border-bottom: 1px solid #333; padding-bottom: 5px;">> Mission</h3>
+            <p>To bridge the gap between offensive security and defensive engineering. I build tools that break systems to understand how to make them unbreakable.</p>
+
+            <h3 style="color: var(--accent-color); border-bottom: 1px solid #333; padding-bottom: 5px;">> Specialty</h3>
+            <p>My core expertise lies in <strong>Automated Security Testing</strong> and <strong>Tool Development</strong>. I don't just run scripts; I write them. From custom malware sandboxes to automated reconnaissance frameworks.</p>
+
+            <h3 style="color: var(--accent-color); border-bottom: 1px solid #333; padding-bottom: 5px;">> Tech Stack</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">JavaScript/Node.js</span>
+                <span class="tech-tag">Bash</span>
+                <span class="tech-tag">C++</span>
+                <span class="tech-tag">React</span>
+                <span class="tech-tag">Docker</span>
+                <span class="tech-tag">AWS</span>
+            </div>
+
+            <h3 style="color: var(--accent-color); border-bottom: 1px solid #333; padding-bottom: 5px;">> Philosophy</h3>
+            <blockquote style="border-left: 3px solid var(--accent-color); padding-left: 15px; margin: 10px 0; color: #aaa; font-style: italic;">
+                "Security is not a product, but a process. It's about knowing your enemy better than they know themselves."
+            </blockquote>
+
+            <h3 style="color: var(--accent-color); border-bottom: 1px solid #333; padding-bottom: 5px;">> Long Term Goals</h3>
+            <p>To architect self-healing security systems and contribute to the next generation of open-source security tooling.</p>
+
             <span class="hidden-flag">flag{h0v3r_m4st3r_f0und_m3}</span>
         </div>
     </div>

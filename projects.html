@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projects Notes</title>
+    <title>Projects Portfolio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
     <style>
         :root {
-            --bg-color: #1e1e1e;
-            --sidebar-bg: #252526;
-            --item-hover: #2a2d2e;
-            --item-active: #37373d;
-            --text-color: #cccccc;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
             --accent-color: #20c20e;
+            --accent-hover: #2ce617;
             --border-color: #333;
         }
 
@@ -22,261 +21,397 @@
 
         body {
             margin: 0;
-            padding: 0;
+            padding: 20px;
             font-family: 'Inter', sans-serif;
             background: var(--bg-color);
             color: var(--text-color);
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
+            overflow-y: auto;
         }
 
-        /* Sidebar */
-        #sidebar {
-            width: 250px;
-            background: var(--sidebar-bg);
-            border-right: 1px solid var(--border-color);
+        /* Grid Layout */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Card Style */
+        .project-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
             flex-direction: column;
             height: 100%;
         }
 
-        .sidebar-header {
-            padding: 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: #888;
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-color: var(--accent-color);
+        }
+
+        .card-img {
+            height: 160px;
+            background: #252526;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-size: 3rem;
             border-bottom: 1px solid var(--border-color);
+        }
+        
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        #project-list {
+        .card-problem {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 15px;
+            line-height: 1.5;
             flex: 1;
-            overflow-y: auto;
-            list-style: none;
-            padding: 0;
-            margin: 0;
         }
 
-        .project-item {
-            padding: 10px 20px;
+        .card-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tool-tag {
+            background: rgba(32, 194, 14, 0.1);
+            color: var(--accent-color);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid rgba(32, 194, 14, 0.2);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            text-decoration: none;
+            text-align: center;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
-            border-left: 3px solid transparent;
-            transition: background 0.2s;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .project-item:hover {
-            background: var(--item-hover);
+        .btn-primary {
+            background: var(--accent-color);
+            color: black;
         }
+        .btn-primary:hover { background: var(--accent-hover); }
 
-        .project-item.active {
-            background: var(--item-active);
-            border-left-color: var(--accent-color);
+        .btn-secondary {
+            background: #333;
             color: white;
         }
+        .btn-secondary:hover { background: #444; }
 
-        .project-item i {
-            color: var(--accent-color);
-            font-size: 1rem;
+        /* Modal */
+        #modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
         }
 
-        /* Main Content */
-        #main-content {
-            flex: 1;
+        #modal-content {
+            background: var(--bg-color);
+            width: 100%;
+            max-width: 900px;
+            height: 90%;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            height: 100%;
             overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        #note-header {
-            padding: 15px 30px;
+        #modal-header {
+            padding: 20px;
             border-bottom: 1px solid var(--border-color);
-            background: var(--bg-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
         }
 
-        #note-title {
-            margin: 0;
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        #note-meta {
-            font-size: 0.8rem;
-            color: #888;
-            margin-top: 5px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        #markdown-content {
-            flex: 1;
-            overflow-y: auto;
+        #modal-body {
             padding: 30px;
+            overflow-y: auto;
             line-height: 1.6;
-            font-size: 0.95rem;
         }
 
-        /* Markdown Styles */
-        #markdown-content h1, #markdown-content h2, #markdown-content h3 {
-            color: white;
-            margin-top: 1.5em;
+        #modal-body img { max-width: 100%; border-radius: 8px; }
+        #modal-body pre { background: #1e1e1e; padding: 15px; border-radius: 8px; overflow-x: auto; }
+        #modal-body code { font-family: 'JetBrains Mono', monospace; background: #333; padding: 2px 5px; border-radius: 4px; }
+        #modal-body h1, #modal-body h2 { color: white; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        #modal-body a { color: var(--accent-color); }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
-        #markdown-content h1 { border-bottom: 1px solid #333; padding-bottom: 10px; }
-        #markdown-content a { color: var(--accent-color); text-decoration: none; }
-        #markdown-content a:hover { text-decoration: underline; }
-        #markdown-content code {
-            background: #2d2d2d;
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85em;
-            color: #dcdcaa;
-        }
-        #markdown-content pre {
-            background: #1e1e1e;
-            padding: 15px;
-            border-radius: 5px;
-            overflow-x: auto;
-            border: 1px solid #333;
-        }
-        #markdown-content pre code {
-            background: transparent;
-            padding: 0;
-            color: #dcdcaa;
-        }
-        #markdown-content blockquote {
-            border-left: 4px solid var(--accent-color);
-            margin: 0;
-            padding-left: 15px;
-            color: #999;
-        }
-        #markdown-content img {
-            max-width: 100%;
-            border-radius: 5px;
-        }
-        
+        .close-modal:hover { color: white; }
+
         /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-color); }
         ::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
-
-        /* Loading State */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            color: #888;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .error-msg {
-            color: #ff5f56;
-            text-align: center;
-            padding: 20px;
-        }
 
     </style>
 </head>
 <body>
 
-    <div id="sidebar">
-        <div class="sidebar-header">
-            <span>Repositories</span>
-            <i class="fas fa-sync-alt" style="cursor: pointer;" onclick="renderProjectList()" title="Refresh"></i>
-        </div>
-        <ul id="project-list">
-            <!-- Projects injected here -->
-        </ul>
+    <div class="projects-grid" id="grid">
+        <!-- Cards injected here -->
     </div>
 
-    <div id="main-content">
-        <div id="note-header">
-            <h1 id="note-title">Select a Project</h1>
-            <div id="note-meta">github.com/RicheByte</div>
-        </div>
-        <div id="markdown-content">
-            <div class="loading">
-                <p>> Select a repository from the sidebar to view its README.</p>
+    <!-- Modal -->
+    <div id="modal-overlay">
+        <div id="modal-content">
+            <div id="modal-header">
+                <h2 id="modal-title" style="margin:0; color:white;">Project Title</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modal-body">
+                <div style="text-align: center; color: #888;">Loading README...</div>
             </div>
         </div>
     </div>
 
     <script>
+        // Static Data for Instant Load
         const projects = [
-            "cyberSamantha",
-            "beforeAuditor",
-            "MonkeyScripts",
-            "exploitdbPro",
-            "cloudMonkey",
-            "bugHunter",
-            "revShell",
-            "dorksDb",
-            "ZoEDR",
-            "virusBugger",
-            "osintEX",
-            "antiLLMExtension",
-            "xxsDoom",
-            "sqlEngine",
-            "cyberchefCLI",
-            "bugBountyTrackerPro",
-            "HoneyTrap",
-            "beastpw",
-            "openSIEM",
-            "fsociety-reborn"
+            {
+                title: "cyberSamantha",
+                problem: "Advanced AI assistant for cybersecurity operations and automation.",
+                tools: ["AI", "Python", "Automation"],
+                repo: "cyberSamantha"
+            },
+            {
+                title: "beforeAuditor",
+                problem: "Pre-audit checklist and vulnerability scanner for compliance readiness.",
+                tools: ["Audit", "Compliance", "Scanner"],
+                repo: "beforeAuditor"
+            },
+            {
+                title: "MonkeyScripts",
+                problem: "Collection of utility scripts for automating repetitive pentesting tasks.",
+                tools: ["Bash", "Python", "Automation"],
+                repo: "MonkeyScripts"
+            },
+            {
+                title: "exploitdbPro",
+                problem: "Enhanced interface for searching and managing ExploitDB locally.",
+                tools: ["Database", "Search", "Exploits"],
+                repo: "exploitdbPro"
+            },
+            {
+                title: "cloudMonkey",
+                problem: "Cloud security assessment tool for AWS and Azure environments.",
+                tools: ["Cloud", "AWS", "Azure"],
+                repo: "cloudMonkey"
+            },
+            {
+                title: "bugHunter",
+                problem: "Automated reconnaissance and vulnerability discovery suite for bug bounties.",
+                tools: ["Recon", "Scanner", "Bug Bounty"],
+                repo: "bugHunter"
+            },
+            {
+                title: "revShell",
+                problem: "Generator for various reverse shell payloads and listeners.",
+                tools: ["Payloads", "Shells", "Red Team"],
+                repo: "revShell"
+            },
+            {
+                title: "dorksDb",
+                problem: "Comprehensive database of Google Dorks for OSINT investigations.",
+                tools: ["OSINT", "Google Dorks", "Database"],
+                repo: "dorksDb"
+            },
+            {
+                title: "ZoEDR",
+                problem: "Zero-overhead Endpoint Detection and Response system concept.",
+                tools: ["EDR", "Blue Team", "Monitoring"],
+                repo: "ZoEDR"
+            },
+            {
+                title: "virusBugger",
+                problem: "Malware analysis sandbox and behavior monitoring tool.",
+                tools: ["Malware Analysis", "Sandbox", "Forensics"],
+                repo: "virusBugger"
+            },
+            {
+                title: "osintEX",
+                problem: "Extended OSINT framework for social media and public record scraping.",
+                tools: ["OSINT", "Scraping", "Python"],
+                repo: "osintEX"
+            },
+            {
+                title: "antiLLMExtension",
+                problem: "Browser extension to detect and block malicious LLM prompt injections.",
+                tools: ["Browser Ext", "AI Security", "JavaScript"],
+                repo: "antiLLMExtension"
+            },
+            {
+                title: "xxsDoom",
+                problem: "Advanced XSS vulnerability scanner with payload mutation engine.",
+                tools: ["XSS", "Scanner", "Web Sec"],
+                repo: "xxsDoom"
+            },
+            {
+                title: "sqlEngine",
+                problem: "High-performance SQL injection detection and exploitation engine.",
+                tools: ["SQLi", "Database", "Pentest"],
+                repo: "sqlEngine"
+            },
+            {
+                title: "cyberchefCLI",
+                problem: "Command-line interface for the popular CyberChef data manipulation tool.",
+                tools: ["CLI", "Data Decoding", "Node.js"],
+                repo: "cyberchefCLI"
+            },
+            {
+                title: "bugBountyTrackerPro",
+                problem: "Platform for tracking bug bounty submissions, statuses, and rewards.",
+                tools: ["React", "Dashboard", "Tracking"],
+                repo: "bugBountyTrackerPro"
+            },
+            {
+                title: "HoneyTrap",
+                problem: "Deployable honeypot system for detecting and logging intruder activity.",
+                tools: ["Honeypot", "Blue Team", "Logging"],
+                repo: "HoneyTrap"
+            },
+            {
+                title: "beastpw",
+                problem: "Fast and customizable password list generator based on user profiling.",
+                tools: ["Password Cracking", "Python", "Profiling"],
+                repo: "beastpw"
+            },
+            {
+                title: "openSIEM",
+                problem: "Open-source Security Information and Event Management solution.",
+                tools: ["SIEM", "ELK", "Monitoring"],
+                repo: "openSIEM"
+            },
+            {
+                title: "fsociety-reborn",
+                problem: "Tribute toolkit containing various hacking tools inspired by Mr. Robot.",
+                tools: ["Toolkit", "Framework", "Python"],
+                repo: "fsociety-reborn"
+            }
         ];
 
-        const projectListEl = document.getElementById('project-list');
-        const noteTitleEl = document.getElementById('note-title');
-        const noteMetaEl = document.getElementById('note-meta');
-        const contentEl = document.getElementById('markdown-content');
+        const grid = document.getElementById('grid');
+        const modal = document.getElementById('modal-overlay');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
 
-        function renderProjectList() {
-            projectListEl.innerHTML = '';
-            projects.forEach(proj => {
-                const li = document.createElement('li');
-                li.className = 'project-item';
-                li.innerHTML = `<i class="fas fa-book"></i> ${proj}`;
-                li.onclick = () => loadProject(proj, li);
-                projectListEl.appendChild(li);
-            });
-        }
+        // Render Grid
+        projects.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'project-card';
+            
+            const tagsHtml = p.tools.map(t => `<span class="tool-tag">${t}</span>`).join('');
 
-        async function loadProject(repoName, element) {
-            // Update Active State
-            document.querySelectorAll('.project-item').forEach(el => el.classList.remove('active'));
-            if(element) element.classList.add('active');
+            card.innerHTML = `
+                <div class="card-img">
+                    <i class="fas fa-terminal"></i>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">
+                        ${p.title}
+                        <a href="https://github.com/RicheByte/${p.repo}" target="_blank" style="color:white; font-size:0.9rem;"><i class="fab fa-github"></i></a>
+                    </div>
+                    <div class="card-problem">${p.problem}</div>
+                    <div class="card-tools">${tagsHtml}</div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" onclick="openReadme('${p.repo}')">
+                            <i class="fas fa-book-open"></i> Read Details
+                        </button>
+                        <a href="https://github.com/RicheByte/${p.repo}" target="_blank" class="btn btn-secondary">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
 
-            // Update Header
-            noteTitleEl.innerText = repoName;
-            noteMetaEl.innerText = `Fetching from github.com/RicheByte/${repoName}...`;
-            contentEl.innerHTML = '<div class="loading">> Fetching README.md...</div>';
+        // Modal Logic
+        async function openReadme(repoName) {
+            modal.style.display = 'flex';
+            modalTitle.innerText = repoName;
+            modalBody.innerHTML = '<div style="text-align: center; color: #888; margin-top: 50px;"><i class="fas fa-circle-notch fa-spin fa-2x"></i><br><br>Fetching README from GitHub...</div>';
 
             try {
-                // Try main branch first
                 let branch = 'main';
                 let response = await fetch(`https://raw.githubusercontent.com/RicheByte/${repoName}/${branch}/README.md`);
                 
-                // If 404, try master branch
                 if (!response.ok) {
                     branch = 'master';
                     response = await fetch(`https://raw.githubusercontent.com/RicheByte/${repoName}/${branch}/README.md`);
                 }
 
-                if (!response.ok) {
-                    throw new Error('README not found (checked main and master branches).');
-                }
+                if (!response.ok) throw new Error('README not found');
 
                 const text = await response.text();
                 
-                // Configure Marked to rewrite relative URLs
+                // Configure Marked
                 const renderer = new marked.Renderer();
                 const baseUrl = `https://raw.githubusercontent.com/RicheByte/${repoName}/${branch}/`;
 
@@ -284,9 +419,9 @@
                     if (!href.startsWith('http') && !href.startsWith('//')) {
                         href = baseUrl + href;
                     }
-                    return `<img src="${href}" alt="${text}" title="${title || ''}" style="max-width:100%;">`;
+                    return `<img src="${href}" alt="${text}" title="${title || ''}">`;
                 };
-
+                
                 renderer.link = function(href, title, text) {
                     if (!href.startsWith('http') && !href.startsWith('//') && !href.startsWith('#')) {
                         href = baseUrl + href;
@@ -294,25 +429,30 @@
                     return `<a href="${href}" title="${title || ''}" target="_blank">${text}</a>`;
                 };
 
-                // Render Markdown
-                contentEl.innerHTML = marked.parse(text, { renderer: renderer });
-                noteMetaEl.innerText = `github.com/RicheByte/${repoName}`;
+                modalBody.innerHTML = marked.parse(text, { renderer: renderer });
 
             } catch (error) {
-                contentEl.innerHTML = `
-                    <div class="error-msg">
-                        <h3><i class="fas fa-exclamation-triangle"></i> Load Failed</h3>
-                        <p>${error.message}</p>
-                        <p>Ensure the repository is public and has a README.md file.</p>
-                        <a href="https://github.com/RicheByte/${repoName}" target="_blank" style="color: var(--accent-color);">Open in GitHub</a>
+                modalBody.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ff5f56; margin-bottom: 20px;"></i>
+                        <h3>Could not load README</h3>
+                        <p>This repository might be private or missing a README.md file.</p>
+                        <a href="https://github.com/RicheByte/${repoName}" target="_blank" class="btn btn-primary" style="display:inline-flex; width:auto; margin-top:20px;">
+                            Open on GitHub
+                        </a>
                     </div>
                 `;
-                noteMetaEl.innerText = 'Error loading content';
             }
         }
 
-        // Init
-        renderProjectList();
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        // Close on click outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
 
     </script>
 </body>
