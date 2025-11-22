@@ -129,13 +129,13 @@
         }
 
         .dock-item {
-            width: 55px;
-            height: 55px;
-            border-radius: 14px;
+            width: 65px;
+            height: 75px;
+            border-radius: 12px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             position: relative;
@@ -143,10 +143,24 @@
             border: 1px solid rgba(255,255,255,0.1);
             color: #fff;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            padding-top: 5px;
+        }
+
+        .dock-item i {
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+        }
+
+        .dock-label {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 2px;
+            text-align: center;
+            line-height: 1;
         }
 
         .dock-item:hover {
-            transform: scale(1.2) translateY(-15px);
+            transform: scale(1.1) translateY(-10px);
             background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
             box-shadow: 0 10px 20px rgba(0,0,0,0.4);
             z-index: 10;
@@ -155,29 +169,16 @@
         .dock-item.active::after {
             content: '';
             position: absolute;
-            bottom: -6px;
-            width: 6px;
-            height: 6px;
+            bottom: 4px;
+            width: 4px;
+            height: 4px;
             background: var(--accent-color);
             border-radius: 50%;
             box-shadow: 0 0 5px var(--accent-color);
         }
 
-        .dock-item::before {
-            content: attr(data-title);
-            position: absolute;
-            top: -40px;
-            background: rgba(0,0,0,0.8);
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-            white-space: nowrap;
-            border: 1px solid #333;
-        }
-        .dock-item:hover::before { opacity: 1; }
+        /* Remove old tooltip */
+        .dock-item::before { display: none; }
 
         /* Desktop Icons */
         #desktop-icons {
@@ -301,10 +302,10 @@
         }
 
         .window.mobile-fullscreen {
-            top: 0 !important;
+            top: 30px !important;
             left: 0 !important;
             width: 100% !important;
-            height: 100% !important;
+            height: calc(100% - 30px) !important;
             border-radius: 0 !important;
             transform: none !important;
         }
@@ -517,8 +518,8 @@
                 padding: 8px;
             }
             .dock-item {
-                width: 40px;
-                height: 40px;
+                width: 45px;
+                height: 60px; /* Increased height for label */
                 font-size: 1.2rem;
             }
             .dock-item:hover {
@@ -526,6 +527,11 @@
             }
             .dock-item::before {
                 display: none; /* Hide tooltips */
+            }
+            .dock-label {
+                display: block; /* Show labels */
+                font-size: 0.55rem; /* Smaller font for mobile */
+                margin-top: 2px;
             }
 
             #desktop-icons {
@@ -559,6 +565,16 @@
             
             #root-shell {
                 width: 90%;
+            }
+
+            /* Larger controls on mobile */
+            .control-btn {
+                width: 20px;
+                height: 20px;
+                margin-right: 5px;
+            }
+            .title-bar {
+                height: 50px; /* Taller title bar for touch */
             }
         }
 
@@ -609,7 +625,6 @@
             <i class="fas fa-wifi" title="Connected: Secure"></i>
             <i class="fas fa-volume-up"></i>
             <i class="fas fa-battery-full"></i>
-            <span id="clock">12:00</span>
         </div>
     </div>
 
@@ -688,21 +703,26 @@
     <!-- Dock -->
     <div id="dock-container">
         <div id="dock">
-            <div class="dock-item" onclick="openWindow('about')" data-title="About Me">
+            <div class="dock-item" onclick="openWindow('about')">
                 <i class="fas fa-user-astronaut" style="color: #4fc3f7;"></i>
+                <span class="dock-label">About</span>
             </div>
-            <div class="dock-item" onclick="openWindow('projects')" data-title="Projects">
+            <div class="dock-item" onclick="openWindow('projects')">
                 <i class="fas fa-folder-open" style="color: #ffd54f;"></i>
+                <span class="dock-label">Projects</span>
             </div>
-            <div class="dock-item" onclick="openWindow('skills')" data-title="Skills">
+            <div class="dock-item" onclick="openWindow('skills')">
                 <i class="fas fa-brain" style="color: #ff8a65;"></i>
+                <span class="dock-label">Skills</span>
             </div>
 
-            <div class="dock-item" onclick="openWindow('browser')" data-title="Tor Browser">
+            <div class="dock-item" onclick="openWindow('browser')">
                 <i class="fas fa-globe" style="color: #b388ff;"></i>
+                <span class="dock-label">Tor</span>
             </div>
-            <div class="dock-item" onclick="openWindow('terminal')" data-title="Terminal">
+            <div class="dock-item" onclick="openWindow('terminal')">
                 <i class="fas fa-terminal" style="color: #e0e0e0;"></i>
+                <span class="dock-label">Terminal</span>
             </div>
         </div>
     </div>
@@ -1246,15 +1266,29 @@
             activeAppName.innerText = title;
         }
 
-        // --- Dragging Logic (Mouse & Touch) ---
+        // --- Dragging Logic (Optimized) ---
         let isDragging = false;
         let currentWin = null;
         let offset = { x: 0, y: 0 };
+        let rafId = null;
+        
+        // Cache layout values
+        let winWidth = window.innerWidth;
+        let winHeight = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            winWidth = window.innerWidth;
+            winHeight = window.innerHeight;
+            canvas.width = winWidth;
+            canvas.height = winHeight;
+        });
 
         // Mouse Events
         document.querySelectorAll('.title-bar').forEach(bar => {
             bar.addEventListener('mousedown', (e) => {
                 if (e.target.closest('.window-controls')) return;
+                // Mobile check: disable dragging if in fullscreen mode
+                if (window.innerWidth < 768) return;
 
                 isDragging = true;
                 currentWin = bar.closest('.window');
@@ -1269,6 +1303,8 @@
             // Touch Events
             bar.addEventListener('touchstart', (e) => {
                 if (e.target.closest('.window-controls')) return;
+                if (window.innerWidth < 768) return; // No dragging on mobile
+
                 isDragging = true;
                 currentWin = bar.closest('.window');
                 const id = currentWin.id.replace('win-', '');
@@ -1279,52 +1315,64 @@
             }, {passive: false});
         });
 
-        document.addEventListener('mousemove', (e) => {
+        // Optimized Move Handler
+        function onMove(clientX, clientY) {
             if (!isDragging || !currentWin) return;
-            e.preventDefault();
-            
-            let x = e.clientX - offset.x;
-            let y = e.clientY - offset.y;
+
+            // Use cached values
+            let x = clientX - offset.x;
+            let y = clientY - offset.y;
             
             // Snapping Logic
             const snapThreshold = 20;
             if (x < snapThreshold) x = 0;
             if (y < snapThreshold) y = 0;
-            if (x + currentWin.offsetWidth > window.innerWidth - snapThreshold) x = window.innerWidth - currentWin.offsetWidth;
-            if (y + currentWin.offsetHeight > window.innerHeight - snapThreshold) y = window.innerHeight - currentWin.offsetHeight;
+            if (x + currentWin.offsetWidth > winWidth - snapThreshold) x = winWidth - currentWin.offsetWidth;
+            if (y + currentWin.offsetHeight > winHeight - snapThreshold) y = winHeight - currentWin.offsetHeight;
 
             if (y < 30) y = 30; // Top bar constraint
             
+            // Apply via transform for better performance, or stick to top/left if layout thrashing is minimal
+            // Using top/left here to maintain compatibility with existing CSS, but inside rAF
             currentWin.style.left = x + 'px';
             currentWin.style.top = y + 'px';
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+                onMove(e.clientX, e.clientY);
+            });
         });
 
         document.addEventListener('touchmove', (e) => {
-            if (!isDragging || !currentWin) return;
-            e.preventDefault();
+            if (!isDragging) return;
+            e.preventDefault(); // Prevent scrolling while dragging
+            
             const touch = e.touches[0];
-            let x = touch.clientX - offset.x;
-            let y = touch.clientY - offset.y;
-            if (y < 30) y = 30;
-            currentWin.style.left = x + 'px';
-            currentWin.style.top = y + 'px';
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+                onMove(touch.clientX, touch.clientY);
+            });
         }, {passive: false});
 
-        document.addEventListener('mouseup', () => {
+        function stopDrag() {
             isDragging = false;
             currentWin = null;
-        });
+            if (rafId) cancelAnimationFrame(rafId);
+        }
 
-        document.addEventListener('touchend', () => {
-            isDragging = false;
-            currentWin = null;
-        });
+        document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('touchend', stopDrag);
 
         // --- Clock & Widgets ---
         function updateClock() {
             const now = new Date();
             const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('clock').innerText = timeString;
+            // document.getElementById('clock').innerText = timeString; // Removed
             document.getElementById('widget-time').innerText = timeString;
             
             const options = { weekday: 'long', month: 'short', day: 'numeric' };
