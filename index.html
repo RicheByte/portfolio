@@ -127,7 +127,8 @@
             position: fixed;
             bottom: 20px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) translateZ(0);
+            will-change: transform;
             z-index: 10000;
             display: flex;
             justify-content: center;
@@ -532,8 +533,7 @@
         .window,
         #matrix-overlay,
         #top-bar,
-        #dock,
-        #dock-container {
+        #dock {
             transform: translateZ(0);
             will-change: transform;
         }
