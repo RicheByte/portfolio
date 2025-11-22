@@ -260,6 +260,7 @@
             color: #ccc;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.85rem;
+            contain: layout style; /* Prevent layout thrashing */
         }
         .sysmon-row {
             margin-bottom: 10px;
@@ -279,8 +280,11 @@
         .sysmon-bar-fill {
             height: 100%;
             background: var(--accent-color);
-            width: 0%;
-            transition: width 0.5s;
+            width: 100%; /* Always 100%, we'll use scaleX */
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease-out;
+            will-change: transform; /* GPU acceleration hint */
         }
 
         /* Windows */
@@ -663,15 +667,15 @@
             </div>
             <div class="sysmon-row">
                 <div class="sysmon-label"><span>CPU Load</span><span id="cpu-val">12%</span></div>
-                <div class="sysmon-bar-bg"><div class="sysmon-bar-fill" id="cpu-bar" style="width: 12%;"></div></div>
+                <div class="sysmon-bar-bg"><div class="sysmon-bar-fill" id="cpu-bar" style="transform: scaleX(0.12);"></div></div>
             </div>
             <div class="sysmon-row">
                 <div class="sysmon-label"><span>Memory</span><span id="mem-val">4.2GB</span></div>
-                <div class="sysmon-bar-bg"><div class="sysmon-bar-fill" id="mem-bar" style="width: 45%;"></div></div>
+                <div class="sysmon-bar-bg"><div class="sysmon-bar-fill" id="mem-bar" style="transform: scaleX(0.45);"></div></div>
             </div>
             <div class="sysmon-row">
                 <div class="sysmon-label"><span>Network</span><span id="net-val">1.2 MB/s</span></div>
-                <div class="sysmon-bar-bg"><div class="sysmon-bar-fill" id="net-bar" style="width: 20%; background: var(--accent-blue);"></div></div>
+                <div class="sysmon-bar-bg"><div class="sysmon-bar-fill" id="net-bar" style="transform: scaleX(0.20); background: var(--accent-blue);"></div></div>
             </div>
         </div>
 
@@ -1369,33 +1373,63 @@
         document.addEventListener('touchend', stopDrag);
 
         // --- Clock & Widgets ---
+        let lastTimeString = '';
+        let lastDateString = '';
         function updateClock() {
             const now = new Date();
             const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            // document.getElementById('clock').innerText = timeString; // Removed
-            document.getElementById('widget-time').innerText = timeString;
+            
+            // Only update DOM if time actually changed (prevents unnecessary repaints)
+            if (timeString !== lastTimeString) {
+                document.getElementById('widget-time').innerText = timeString;
+                lastTimeString = timeString;
+            }
             
             const options = { weekday: 'long', month: 'short', day: 'numeric' };
-            document.getElementById('widget-date').innerText = now.toLocaleDateString('en-US', options);
+            const dateString = now.toLocaleDateString('en-US', options);
+            if (dateString !== lastDateString) {
+                document.getElementById('widget-date').innerText = dateString;
+                lastDateString = dateString;
+            }
         }
         setInterval(updateClock, 1000);
         updateClock();
 
         // --- System Monitor Simulation ---
+        let lastCpu = 0, lastMem = 0, lastNet = 0;
         function updateSysMon() {
             // CPU
             const cpu = Math.floor(Math.random() * 30) + 5;
-            document.getElementById('cpu-val').innerText = cpu + '%';
-            document.getElementById('cpu-bar').style.width = cpu + '%';
-
+            const cpuScale = cpu / 100;
+            
             // Memory (Static-ish)
             const mem = Math.floor(Math.random() * 5) + 40;
-            document.getElementById('mem-bar').style.width = mem + '%';
-
+            const memScale = mem / 100;
+            
             // Network
             const net = (Math.random() * 2).toFixed(1);
-            document.getElementById('net-val').innerText = net + ' MB/s';
-            document.getElementById('net-bar').style.width = (net * 10) + '%';
+            const netScale = Math.min((net * 10) / 100, 1);
+            
+            // Batch DOM updates in requestAnimationFrame for better performance
+            requestAnimationFrame(() => {
+                // Only update if values changed
+                if (cpu !== lastCpu) {
+                    document.getElementById('cpu-val').innerText = cpu + '%';
+                    document.getElementById('cpu-bar').style.transform = `scaleX(${cpuScale})`;
+                    lastCpu = cpu;
+                }
+                
+                if (mem !== lastMem) {
+                    document.getElementById('mem-bar').style.transform = `scaleX(${memScale})`;
+                    lastMem = mem;
+                }
+                
+                if (net !== lastNet) {
+                    document.getElementById('net-val').innerText = net + ' MB/s';
+                    document.getElementById('net-bar').style.transform = `scaleX(${netScale})`;
+                    lastNet = net;
+                }
+            });
         }
         setInterval(updateSysMon, 2000);
 
