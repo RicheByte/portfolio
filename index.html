@@ -41,8 +41,8 @@
         body {
             margin: 0;
             padding: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100dvw;
+            height: 100dvh;
             /* Local Kali ASCII Wallpaper */
             background: url('kali-ascii.png') no-repeat center center/cover;
             background-color: #0a0a0a;
@@ -365,6 +365,7 @@
             cursor: default;
             border-radius: 12px 12px 0 0;
             position: relative;
+            touch-action: none;
         }
 
         .window-controls {
@@ -524,7 +525,18 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-
+        /* GPU Stabilization */
+        #widget-container,
+        .widget-sysmon,
+        #boot-screen,
+        .window,
+        #matrix-overlay,
+        #top-bar,
+        #dock,
+        #dock-container {
+            transform: translateZ(0);
+            will-change: transform;
+        }
 
         /* --- Mobile Responsiveness --- */
         @media (max-width: 768px) {
@@ -609,6 +621,11 @@
             }
             .title-bar {
                 height: 50px; /* Taller title bar for touch */
+            }
+
+            /* Reduced blur for mobile performance */
+            #dock, #top-bar, .window {
+                backdrop-filter: blur(6px);
             }
         }
 
@@ -1328,6 +1345,7 @@
         window.addEventListener('resize', () => {
             winWidth = window.innerWidth;
             winHeight = window.innerHeight;
+            if (window.innerWidth < 768) return;
             canvas.width = winWidth;
             canvas.height = winHeight;
         });
@@ -1584,6 +1602,7 @@
         }
 
         window.addEventListener('resize', () => {
+            if (window.innerWidth < 768) return;
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
