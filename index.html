@@ -3,8 +3,25 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="description" content="RicheByte OS - Kali/Mac Hybrid">
-    <title>RicheByte OS</title>
+    <title>RicheByte OS - Cybersecurity Portfolio & Web Desktop</title>
+    <meta name="description" content="Interactive Web Desktop Portfolio of Kanchuka Induranga (RicheByte). Featuring cybersecurity projects, tools, and a unique Kali Linux/macOS hybrid interface.">
+    <meta name="keywords" content="Cybersecurity, Portfolio, Web OS, Kali Linux, macOS, RicheByte, Kanchuka Induranga, Security Analyst, Penetration Testing, Web Development">
+    <meta name="author" content="Kanchuka Induranga">
+    <link rel="canonical" href="https://richebyte.github.io/portfolio/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://richebyte.github.io/portfolio/">
+    <meta property="og:title" content="RicheByte OS - Cybersecurity Portfolio">
+    <meta property="og:description" content="Interactive Web Desktop Portfolio of Kanchuka Induranga. Explore cybersecurity projects and tools in a unique OS interface.">
+    <meta property="og:image" content="https://richebyte.github.io/portfolio/kali-ascii.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://richebyte.github.io/portfolio/">
+    <meta property="twitter:title" content="RicheByte OS - Cybersecurity Portfolio">
+    <meta property="twitter:description" content="Interactive Web Desktop Portfolio of Kanchuka Induranga. Explore cybersecurity projects and tools in a unique OS interface.">
+    <meta property="twitter:image" content="https://richebyte.github.io/portfolio/kali-ascii.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -556,9 +573,22 @@
             #widget-container {
                 top: 50px;
                 right: 10px;
-                transform: scale(0.7);
-                transform-origin: top right;
+                /* Removed transform: scale(0.7) to prevent layout glitching on updates */
+                width: 200px; /* Direct sizing */
+                align-items: flex-end;
             }
+
+            .widget-welcome h1 { font-size: 2rem; }
+            .widget-welcome h2 { font-size: 0.9rem; }
+
+            .widget-sysmon {
+                width: 100%; /* Fill the smaller container */
+                padding: 10px;
+                font-size: 0.75rem;
+            }
+            
+            .sysmon-row { margin-bottom: 6px; }
+            .sysmon-bar-bg { height: 4px; }
 
             .window {
                 width: 90% !important;
@@ -605,6 +635,21 @@
 
 
     </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "RicheByte OS Portfolio",
+      "url": "https://richebyte.github.io/portfolio/",
+      "author": {
+        "@type": "Person",
+        "name": "Kanchuka Induranga",
+        "alternateName": "RicheByte",
+        "url": "https://richebyte.github.io/portfolio/"
+      },
+      "description": "Interactive Web Desktop Portfolio of Kanchuka Induranga (RicheByte)."
+    }
+    </script>
 </head>
 <body>
 
