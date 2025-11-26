@@ -43,8 +43,8 @@
             padding: 0;
             width: 100dvw;
             height: 100dvh;
-            /* Local Kali ASCII Wallpaper */
-            background: url('kali-ascii.png') no-repeat center center/cover;
+            /* Local Kali ASCII Wallpaper with Dark Overlay */
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('kali-ascii.png') no-repeat center center/cover;
             background-color: #0a0a0a;
             font-family: 'Inter', sans-serif;
             overflow: hidden;
@@ -563,7 +563,9 @@
             }
             .dock-label {
                 display: block; /* Show labels */
-                font-size: 0.55rem; /* Smaller font for mobile */
+                font-size: 0.75rem; /* Increased font for readability */
+                font-weight: 600;
+                text-shadow: 0 1px 3px black;
                 margin-top: 2px;
             }
 
@@ -651,6 +653,141 @@
 
 
 
+        /* --- Cyberpunk HUD Widget --- */
+        .hud-container {
+            width: 100%;
+            background: rgba(5, 10, 15, 0.95); /* Darker background for contrast */
+            border: 1px solid rgba(32, 194, 14, 0.3);
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            position: relative;
+            clip-path: polygon(
+                0 0, 
+                100% 0, 
+                100% 85%, 
+                95% 100%, 
+                0 100%
+            );
+            box-shadow: 0 0 15px rgba(32, 194, 14, 0.1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .hud-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+            animation: scanline 4s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .hud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .hud-title {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px rgba(32, 194, 14, 0.5);
+        }
+
+        .hud-status {
+            font-size: 0.8rem; /* Increased size */
+            font-weight: bold;
+            color: var(--accent-blue);
+            background: rgba(0, 212, 255, 0.15);
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .hud-content {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .hud-visual {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hud-circle {
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(32, 194, 14, 0.2);
+            border-top: 2px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 3s linear infinite;
+        }
+        
+        .hud-circle-inner {
+            position: absolute;
+            width: 70%;
+            height: 70%;
+            border: 1px solid var(--accent-blue);
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+
+        .hud-icon {
+            position: absolute;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .hud-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .hud-stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 6px 10px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hud-label {
+            font-size: 0.75rem; /* Increased size */
+            color: #aaa; /* Lighter color for contrast */
+            text-transform: uppercase;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .hud-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem; /* Increased size */
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 0 2px rgba(0,0,0,0.5);
+        }
+
+        .hud-value.accent { color: var(--accent-color); }
+        .hud-value.blue { color: var(--accent-blue); }
+
     </style>
     <script type="application/ld+json">
     {
@@ -718,13 +855,36 @@
             <h2 id="widget-date">Wednesday, Nov 20</h2>
         </div>
 
-        <!-- Mobile Status Widget -->
-        <div class="widget-sysmon" style="width: 100%; padding: 10px; text-align: center; background: rgba(0,0,0,0.4);">
-            <div style="font-size: 0.9rem; font-weight: bold; color: var(--accent-color); margin-bottom: 5px;">SYSTEM STATUS</div>
-            <div style="display: flex; justify-content: center; gap: 20px; font-size: 1.2rem; color: #ccc;">
-                <div><i class="fas fa-wifi"></i> <span style="font-size: 0.8rem;">Online</span></div>
-                <div><i class="fas fa-battery-full"></i> <span style="font-size: 0.8rem;">100%</span></div>
-                <div><i class="fas fa-shield-alt"></i> <span style="font-size: 0.8rem;">Secure</span></div>
+        <!-- Cyberpunk HUD Widget -->
+        <div class="hud-container">
+            <div class="hud-header">
+                <span class="hud-title">SYSTEM_OVERRIDE</span>
+                <span class="hud-status">CONNECTED</span>
+            </div>
+            <div class="hud-content">
+                <div class="hud-visual">
+                    <div class="hud-circle"></div>
+                    <div class="hud-circle-inner"></div>
+                    <i class="fas fa-fingerprint hud-icon"></i>
+                </div>
+                <div class="hud-grid">
+                    <div class="hud-stat-box">
+                        <span class="hud-label">Uplink</span>
+                        <span class="hud-value accent">SECURE</span>
+                    </div>
+                    <div class="hud-stat-box">
+                        <span class="hud-label">Battery</span>
+                        <span class="hud-value">100%</span>
+                    </div>
+                    <div class="hud-stat-box">
+                        <span class="hud-label">Location</span>
+                        <span class="hud-value blue">UNKNOWN</span>
+                    </div>
+                    <div class="hud-stat-box">
+                        <span class="hud-label">Threats</span>
+                        <span class="hud-value">NONE</span>
+                    </div>
+                </div>
             </div>
         </div>
 
